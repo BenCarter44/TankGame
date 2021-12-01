@@ -22,8 +22,15 @@ Make the game easy/simple. Then add things to it. Your storyboard will be your "
 
 
 */
+
+#define STOP_TEST 1
+
 #include "TankGame.h"
 #include "PrettyConsole/console.h"
+
+#include <iostream>
+#include "cpr/cpr.h"
+
 using namespace std;
 
 int main()
@@ -33,6 +40,12 @@ int main()
 	cout << c.getWidth() << endl;
 	cout << c.getHeight() << endl;
 	cout << c.getSupport() << endl;
+	cout << "Getting IP of current network" << endl;
+	cpr::Response r = cpr::Get(cpr::Url{"https://codingcando.com/api/getIP"});
+	cout << "Current IP: " << r.text << endl;
 
+	r = cpr::Get(cpr::Url{ "https://codingcando.com/api/getIPInfo?ip=" + r.text });
+	cout << "Information: " << r.text << endl;
+	
 	return 0;
 }

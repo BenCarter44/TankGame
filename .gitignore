@@ -6,6 +6,7 @@
 # Ignore PrettyConsole
 
 PrettyConsole/
+include/
 
 
 
