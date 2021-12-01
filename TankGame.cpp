@@ -23,11 +23,16 @@ Make the game easy/simple. Then add things to it. Your storyboard will be your "
 
 */
 #include "TankGame.h"
-
+#include "PrettyConsole/console.h"
 using namespace std;
 
 int main()
 {
+	Console c = Console();
 	cout << "Hello CMake." << endl;
+	cout << c.getWidth() << endl;
+	cout << c.getHeight() << endl;
+	cout << c.getSupport() << endl;
+
 	return 0;
 }
