@@ -23,7 +23,7 @@ Make the game easy/simple. Then add things to it. Your storyboard will be your "
 
 */
 
-#define STOP_TEST 1
+
 
 #include "TankGame.h"
 #include "PrettyConsole/console.h"
