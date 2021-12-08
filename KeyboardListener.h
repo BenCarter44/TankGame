@@ -32,6 +32,7 @@ public:
 	void listen();
 	unsigned char getKey();
 	 void addKey(unsigned char keyValue);
+	 void setPauseTime(int pt);
 
 
 };

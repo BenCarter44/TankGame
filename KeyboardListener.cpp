@@ -8,7 +8,10 @@ KeyboardListener::KeyboardListener(int pt)
 {
 	pauseTime = pt;
 }
-
+void KeyboardListener::setPauseTime(int pt)
+{
+	pauseTime = pt;
+}
 void KeyboardListener::addKey(unsigned char keyValue)
 {
 	active.push_back(keyValue);

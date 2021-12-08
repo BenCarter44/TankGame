@@ -11,6 +11,9 @@ private:
 public:
 	WindowScaler();
 	WindowScaler(int i, int j, int k, int l);
+	void init();
+	void init(int i, int j, int k, int l);
+	void init(int k, int l);
 	WindowScaler(int k, int l);
 
 	int getVal(int i);
