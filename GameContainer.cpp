@@ -383,6 +383,9 @@ void GameContainer::onlinePlayerMenu()
 	sleep(1000);
 	startMenu();
 }
+
+
+/* HELPER FUNCTIONS */
 bool GameContainer::isGameEnd()
 {
 	return endGame;
