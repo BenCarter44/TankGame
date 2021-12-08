@@ -17,7 +17,6 @@ using namespace std;
 #include <iostream>
 
 #include "Stack.h"
-#include "KeyboardCombo.h"
 
 class KeyboardListener
 {
@@ -33,6 +32,7 @@ public:
 	void listen();
 	unsigned char getKey();
 	 void addKey(unsigned char keyValue);
+	 void setPauseTime(int pt);
 
 
 };

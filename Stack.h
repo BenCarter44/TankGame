@@ -1,3 +1,15 @@
+
+/*
+
+This class is from page 469-470 in the CS textbook.
+Copied from listing 12.7
+
+(Implemented in game)
+
+
+*/
+
+
 #ifndef TSTACK_H
 #define TSTACK_H
 
