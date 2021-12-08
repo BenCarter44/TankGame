@@ -46,18 +46,36 @@ Where is the composition?
 #include "KeyboardListener.h"
 #include "WindowScaler.h"
 #include "GameContainer.h"
+#include "HumanPlayer.h"
+#include "CPUPlayer.h"
 
 using namespace std;
 using namespace std::chrono;
 
 int main()
 {
-	GameContainer game = GameContainer();
+	/*GameContainer game = GameContainer();
 	if (game.isGameEnd())
 	{
 		return 0;
 	}
 	game.startMenu();
+	*/
+
+	HumanPlayer hp = HumanPlayer("Ben");
+	CPUPlayer cpuPlayer = CPUPlayer("Computer");
+
+	Weapon w = Weapon("Gun", 5);
+
+	hp.addWeaponStash(Stash(w, 15));
+	hp.displayAll();
+
+	Tank* t = cpuPlayer.getTank();
+	t->takeDamage(w.getDamage());
+
+	cpuPlayer.displayAll();
+	
+
 
 	return 0;
 }
