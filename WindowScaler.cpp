@@ -46,7 +46,11 @@ void WindowScaler::init(int k, int l)
 	outMin = k;
 	outMax = l;
 }
-
+int WindowScaler::reverse(int absolutePixel)
+{
+	int great = (outMax > outMin) ? outMax : outMin;
+	return ((absolutePixel * (inMax - inMin)) / (great - 1)) + inMin;
+}
 int WindowScaler::getVal(int i)
 {
 	return (double)(i - inMin) * (double)(outMax - outMin) / (double)(inMax - inMin) + outMin;

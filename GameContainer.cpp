@@ -398,6 +398,12 @@ void GameContainer::sleep(unsigned int l)
 }
 void GameContainer::arena()
 {
+
+	//cout << '\n' << winY.getVal(5) << '\n';
+	//cout << '\n' << winY.reverse(27) << '\n';
+
+	//return;
+
 	c.clear();
 	c.addShape(&background);
 	
@@ -411,6 +417,11 @@ void GameContainer::arena()
 
 	Style groundStyle;
 	Point2D groundPoint;
+	int* totalHeights = new int[c.getWidth()];
+	for (int x = 0; x < c.getWidth(); x++)
+	{
+		totalHeights[x] = 0;
+	}
 	for (int y = 0; y < c.getHeight(); y++)
 	{
 		for (int x = 0; x < c.getWidth(); x++)
@@ -422,7 +433,7 @@ void GameContainer::arena()
 				groundPoint.init(x,y);
 				groundPoint.setFill(groundStyle);
 				c.addShape(&groundPoint);
-				
+				totalHeights[x] += 1;
 			}
 		}
 	}
@@ -431,12 +442,12 @@ void GameContainer::arena()
 
 	
 	
-	Rectangle2D tank1 = Rectangle2D(winX.getVal(3), winY.getVal(7), winX.getLength(4), winY.getLength(2));
+	Rectangle2D tank1 = Rectangle2D(winX.getVal(3), c.getHeight() - totalHeights[winX.getVal(4)] - winY.getLength(2), winX.getLength(4), winY.getLength(2));
 	Style tankStyle;
 	tankStyle.setBackgroundColor(255, 255, 0);
 	tank1.setFill(tankStyle);
 	c.addShape(&tank1);
-	Rectangle2D tank2 = Rectangle2D(winX.getVal(93), winY.getVal(7), winX.getLength(4), winY.getLength(2));
+	Rectangle2D tank2 = Rectangle2D(winX.getVal(93), c.getHeight() - totalHeights[winX.getVal(93)] - winY.getLength(2), winX.getLength(4), winY.getLength(2));
 	
 	tank2.setFill(tankStyle);
 	c.addShape(&tank2);
@@ -447,8 +458,8 @@ void GameContainer::arena()
 	Shot myShot = Shot();
 	myShot.setAngle(45);
 	myShot.setPower(33);
-	myShot.setStartX(4);
-	myShot.setStartY(8);
+	myShot.setStartX(winX.reverse(tank1.getAnchorX()) + 2);
+	myShot.setStartY(winY.reverse(tank1.getAnchorY()));
 
 	myShot.calculatePoints();
 

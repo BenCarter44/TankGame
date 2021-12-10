@@ -23,5 +23,6 @@ public:
 	int getOutMin();
 	int getInMax();
 	int getInMin();
+	int reverse(int absolutePixel);
 };
 #endif
