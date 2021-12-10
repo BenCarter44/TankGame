@@ -482,7 +482,8 @@ void GameContainer::arena()
 			if (!groundHandler.isGround(actualPoint.getAnchorX(), actualPoint.getAnchorY()))
 			{
 				c.addShape(&actualPoint);
-				
+				sleep(2); // 40 fps
+				c.smartRender();
 			}
 		}
 		else
@@ -491,7 +492,7 @@ void GameContainer::arena()
 		}
 		
 	}
-	c.smartRender();
+	
 	getchar();
 
 
