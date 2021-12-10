@@ -6,13 +6,13 @@ GameContainer::GameContainer()
 	
 	endGame = !c.getSupport();
 	cout << "Please resize screen now to approporate size! Must be above 20x15";
-	sleep(2000);
+	sleep(5000);
 
 	c.init();
 	endGame = endGame || (c.getHeight() < 15 || c.getWidth() < 20);
 
 	winX.init(0, 100, 0, c.getWidth());
-	winY.init(0, 30, 0, c.getHeight());
+	winY.init(50, 0, 0, c.getHeight());
 
 
 	// keys
@@ -129,8 +129,8 @@ void GameContainer::startMenu()
 
 		if (newData)
 		{
-			Rectangle2D itemOld = Rectangle2D(winX.getVal(25), oldCursor, winX.getVal(50), 1);
-			Rectangle2D itemCurrent = Rectangle2D(winX.getVal(25), cursor, winX.getVal(50), 1);
+			Rectangle2D itemOld = Rectangle2D(winX.getVal(25), oldCursor, winX.getLength(50), 1);
+			Rectangle2D itemCurrent = Rectangle2D(winX.getVal(25), cursor, winX.getLength(50), 1);
 
 
 			itemCurrent.setFill(selection);
@@ -208,12 +208,12 @@ void GameContainer::newPlayerMenu()
 	c.addShape(&title);
 	// Bottom menu window
 
-	Rectangle2D mainMenu = Rectangle2D(winX.getVal(25), 7, winX.getVal(50), 6);
+	Rectangle2D mainMenu = Rectangle2D(winX.getVal(25), 7, winX.getLength(50), 6);
 	
 	mainMenu.setFill(mainMenuBackground);
 	c.addShape(&mainMenu);
 
-	Rectangle2D textBox = Rectangle2D(winX.getVal(26), 10, winX.getVal(48), 1);	
+	Rectangle2D textBox = Rectangle2D(winX.getVal(26), 10, winX.getLength(48), 1);	
 	textBox.setFill(textBoxBackground);
 	c.addShape(&textBox);
 
@@ -327,8 +327,8 @@ void GameContainer::loadPlayerMenu()
 
 		if (newData)
 		{
-			Rectangle2D itemOld = Rectangle2D(winX.getVal(25), oldCursor, winX.getVal(50), 1);
-			Rectangle2D itemCurrent = Rectangle2D(winX.getVal(25), cursor, winX.getVal(50), 1);
+			Rectangle2D itemOld = Rectangle2D(winX.getVal(25), oldCursor, winX.getLength(50), 1);
+			Rectangle2D itemCurrent = Rectangle2D(winX.getVal(25), cursor, winX.getLength(50), 1);
 
 
 			itemCurrent.setFill(selection);
@@ -395,4 +395,126 @@ void GameContainer::sleep(unsigned int l)
 	using namespace std::chrono;
 	using namespace std::this_thread;
 	sleep_for(milliseconds(l));
+}
+void GameContainer::arena()
+{
+
+	//cout << '\n' << winY.getVal(5) << '\n';
+	//cout << '\n' << winY.reverse(27) << '\n';
+
+	//return;
+
+	c.clear();
+	c.addShape(&background);
+	
+	c.putString(to_string(c.getHeight()), 0, 0);
+	c.putString(to_string(c.getWidth()), 0, 1);
+	c.putString(to_string(winY.getLength(5)), 0, 2);
+
+	Ground groundHandler = Ground(c.getWidth(),c.getHeight());
+
+	groundHandler.groundRandomizer();
+
+	Style groundStyle;
+	Point2D groundPoint;
+	int* totalHeights = new int[c.getWidth()];
+	for (int x = 0; x < c.getWidth(); x++)
+	{
+		totalHeights[x] = 0;
+	}
+	for (int y = 0; y < c.getHeight(); y++)
+	{
+		for (int x = 0; x < c.getWidth(); x++)
+		{
+			//cout << winX.getVal(x) << " " << winY.getVal(y) << '\n';
+			if (groundHandler.isGround(x,y))
+			{
+				groundStyle.setBackgroundColor(0, Console::mapValue(y, c.getHeight(),0, 50, 190), 0);
+				groundPoint.init(x,y);
+				groundPoint.setFill(groundStyle);
+				c.addShape(&groundPoint);
+				totalHeights[x] += 1;
+			}
+		}
+	}
+	 c.render();
+	//cout << "HERE!\n";
+
+	
+	
+	Rectangle2D tank1 = Rectangle2D(winX.getVal(3), c.getHeight() - totalHeights[winX.getVal(4)] - winY.getLength(2), winX.getLength(4), winY.getLength(2));
+	Style tankStyle;
+	tankStyle.setBackgroundColor(255, 255, 0);
+	tank1.setFill(tankStyle);
+	c.addShape(&tank1);
+	Rectangle2D tank2 = Rectangle2D(winX.getVal(93), c.getHeight() - totalHeights[winX.getVal(93)] - winY.getLength(2), winX.getLength(4), winY.getLength(2));
+	
+	tank2.setFill(tankStyle);
+	c.addShape(&tank2);
+	
+	c.smartRender();
+
+	
+	Shot myShot = Shot();
+	myShot.setAngle(45);
+	myShot.setPower(33);
+	myShot.setStartX(winX.reverse(tank1.getAnchorX()) + 2);
+	myShot.setStartY(winY.reverse(tank1.getAnchorY()));
+
+	myShot.calculatePoints();
+
+	vector<PStruct> pts = myShot.getPoints();
+
+	
+	
+	Style weaponStyle;
+	weaponStyle.setBackgroundColor(255, 0, 0);
+	Point2D actualPoint;
+
+	for (int pointNumber = 0; pointNumber < pts.size(); pointNumber++)
+	{
+		// cout << (int)pts[pointNumber].x << " " << (int)pts[pointNumber].y << '\n';
+		if (pts[pointNumber].x >= 0 && pts[pointNumber].x < winX.getInMax() && pts[pointNumber].y > 0 && pts[pointNumber].y < winY.getInMin())
+		{
+			
+			actualPoint.init((int)winX.getDoubleVal(pts[pointNumber].x),(int)winY.getDoubleVal(pts[pointNumber].y));
+			actualPoint.setFill(weaponStyle);
+			if (!groundHandler.isGround(actualPoint.getAnchorX(), actualPoint.getAnchorY()))
+			{
+				c.addShape(&actualPoint);
+				
+			}
+		}
+		else
+		{
+		//	cout << "BAD: " << winX.getVal(pts[pointNumber]->getAnchorX()) << " " << winY.getVal(pts[pointNumber]->getAnchorY()) << '\n';
+		}
+		
+	}
+	c.smartRender();
+	getchar();
+
+
+	
+
+
+
+
+
+
+	/*
+	HumanPlayer hp = HumanPlayer("Ben");
+	CPUPlayer cpuPlayer = CPUPlayer("Computer");
+
+	Weapon w = Weapon("Gun", 5);
+
+	hp.addWeaponStash(Stash(w, 15));
+	hp.displayAll();
+
+	Tank* t = cpuPlayer.getTank();
+	t->takeDamage(w.getDamage());
+
+	cpuPlayer.displayAll();
+	*/
+
 }
