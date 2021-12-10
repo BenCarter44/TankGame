@@ -49,10 +49,38 @@ void WindowScaler::init(int k, int l)
 
 int WindowScaler::getVal(int i)
 {
-	return (i - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+	return (double)(i - inMin) * (double)(outMax - outMin) / (double)(inMax - inMin) + outMin;
 }
 double WindowScaler::getDoubleVal(double x)
 {
-	return (x - inMin) * (outMax - outMin) / (double)(inMax - inMin) + outMin;
+	return (double)(x - inMin) * (double)(outMax - outMin) / (double)(inMax - inMin) + outMin;
 }
-	
+int WindowScaler::getLength(int i)
+{
+	if ((inMin > inMax || outMin > outMax) && !(inMin > inMax && outMin > outMax))
+	{
+		// flipped!
+		return outMax - getVal(i);
+	}
+	else
+	{
+		return getVal(i);
+	}
+}
+
+int WindowScaler::getOutMax()
+{
+	return outMax;
+}
+int WindowScaler::getOutMin()
+{
+	return outMin;
+}
+int WindowScaler::getInMax()
+{
+	return inMax;
+}
+int WindowScaler::getInMin()
+{
+	return inMin;
+}

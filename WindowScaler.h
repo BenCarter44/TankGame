@@ -17,6 +17,11 @@ public:
 	WindowScaler(int k, int l);
 
 	int getVal(int i);
+	int getLength(int i);
 	double getDoubleVal(double x);
+	int getOutMax();
+	int getOutMin();
+	int getInMax();
+	int getInMin();
 };
 #endif

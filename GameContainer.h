@@ -13,6 +13,9 @@
 #include "cpr/cpr.h"
 #include "KeyboardListener.h"
 #include "WindowScaler.h"
+#include "HumanPlayer.h"
+#include "CPUPlayer.h"
+#include "PStruct.h"
 
 using namespace std;
 
@@ -50,6 +53,7 @@ public:
 	void loadPlayerMenu();
 	void onlinePlayerMenu();
 	bool isGameEnd();
+	void arena();
 
 
 };
