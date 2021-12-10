@@ -16,6 +16,7 @@
 #include "HumanPlayer.h"
 #include "CPUPlayer.h"
 #include "PStruct.h"
+#include "Ground.h"
 
 using namespace std;
 

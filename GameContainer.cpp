@@ -404,15 +404,31 @@ void GameContainer::arena()
 	c.putString(to_string(c.getHeight()), 0, 0);
 	c.putString(to_string(c.getWidth()), 0, 1);
 	c.putString(to_string(winY.getLength(5)), 0, 2);
-	
-	Rectangle2D ground = Rectangle2D(winX.getVal(0),winY.getVal(5), winX.getLength(100),winY.getLength(5));
-	
+
+	Ground groundHandler = Ground(c.getWidth(),c.getHeight());
+
+	groundHandler.groundRandomizer();
+
 	Style groundStyle;
-	groundStyle.setBackgroundColor(0, 255, 0);
-	groundStyle.setTextColor(255, 255, 255);
-	ground.setFill(groundStyle);
-	c.addShape(&ground);
-	
+	Point2D groundPoint;
+	for (int y = 0; y < c.getHeight(); y++)
+	{
+		for (int x = 0; x < c.getWidth(); x++)
+		{
+			//cout << winX.getVal(x) << " " << winY.getVal(y) << '\n';
+			if (groundHandler.isGround(x,y))
+			{
+				groundStyle.setBackgroundColor(0, Console::mapValue(y, c.getHeight(),0, 50, 190), 0);
+				groundPoint.init(x,y);
+				groundPoint.setFill(groundStyle);
+				c.addShape(&groundPoint);
+				
+			}
+		}
+	}
+	 c.render();
+	//cout << "HERE!\n";
+
 	
 	
 	Rectangle2D tank1 = Rectangle2D(winX.getVal(3), winY.getVal(7), winX.getLength(4), winY.getLength(2));
@@ -429,20 +445,17 @@ void GameContainer::arena()
 
 	
 	Shot myShot = Shot();
-	myShot.setAngle(40+90);
-	myShot.setPower(30);
-	myShot.setStartX(94);
-	myShot.setStartY(7);
+	myShot.setAngle(45);
+	myShot.setPower(33);
+	myShot.setStartX(4);
+	myShot.setStartY(8);
 
 	myShot.calculatePoints();
 
 	vector<PStruct> pts = myShot.getPoints();
 
-	/*for (int x = 0; x < pts.size(); x++)
-	{
-		cout << pts[x]->getAnchorX() << " " << pts[x]->getAnchorY() << '\n';
-	}
-	*/
+	
+	
 	Style weaponStyle;
 	weaponStyle.setBackgroundColor(255, 0, 0);
 	Point2D actualPoint;
@@ -455,8 +468,11 @@ void GameContainer::arena()
 			
 			actualPoint.init((int)winX.getDoubleVal(pts[pointNumber].x),(int)winY.getDoubleVal(pts[pointNumber].y));
 			actualPoint.setFill(weaponStyle);
-			c.addShape(&actualPoint);
-			c.smartRender();
+			if (!groundHandler.isGround(actualPoint.getAnchorX(), actualPoint.getAnchorY()))
+			{
+				c.addShape(&actualPoint);
+				
+			}
 		}
 		else
 		{
@@ -464,7 +480,7 @@ void GameContainer::arena()
 		}
 		
 	}
-	
+	c.smartRender();
 	getchar();
 
 

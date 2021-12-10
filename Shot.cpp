@@ -128,11 +128,11 @@ void Shot::calculatePoints()
 		{
 			// x is time in this case
 			double plugX = startX;
-			double function = power * sin(radAngle) +  -1 * gravity * plugX * plugX / 2.0 + startY;
+			double function = power * sin(radAngle) +  -1 * gravity * x * x / 2.0;
 			//Point2D* pt = new Point2D(startX, (int)function + startY);
 			// Point2D* pt = new Point2D(x + startX, (int)function + startY);
 			PStruct pt;
-			pt.x = x;
+			pt.x = startX;
 			pt.y = function + startY;
 			points.push_back(pt);
 		}

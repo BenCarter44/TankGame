@@ -4,7 +4,7 @@
 cmake_minimum_required (VERSION 3.8)
 
 project ("TankGame")
-add_executable(TankGame "TankGame.cpp" "TankGame.h" "PrettyConsole/console.h" "PrettyConsole/console.cpp" "PrettyConsole/row.h" "PrettyConsole/row.cpp" "PrettyConsole/styles.h" "PrettyConsole/styles.cpp" "PrettyConsole/styleAttribute.h" "PrettyConsole/styleAttribute.cpp" "PrettyConsole/screenComponent.h" "PrettyConsole/screenComponent.cpp" "PrettyConsole/rectangle.h" "PrettyConsole/rectangle.cpp" "PrettyConsole/line.h" "PrettyConsole/line.cpp" "PrettyConsole/point.h" "PrettyConsole/point.cpp" "KeyboardListener.h" "KeyboardListener.cpp" "Stack.h"   "WindowScaler.cpp" "GameContainer.h" "GameContainer.cpp" "Player.cpp" "Tank.h" "Tank.cpp" "Weapon.h" "Shot.h" "Shot.cpp" "CPUPlayer.h" "CPUPlayer.cpp" "HumanPlayer.cpp" "HumanPlayer.h" "Stash.h" "Stash.cpp" "Weapon.cpp" "PStruct.h")
+add_executable(TankGame "TankGame.cpp" "TankGame.h" "PrettyConsole/console.h" "PrettyConsole/console.cpp" "PrettyConsole/row.h" "PrettyConsole/row.cpp" "PrettyConsole/styles.h" "PrettyConsole/styles.cpp" "PrettyConsole/styleAttribute.h" "PrettyConsole/styleAttribute.cpp" "PrettyConsole/screenComponent.h" "PrettyConsole/screenComponent.cpp" "PrettyConsole/rectangle.h" "PrettyConsole/rectangle.cpp" "PrettyConsole/line.h" "PrettyConsole/line.cpp" "PrettyConsole/point.h" "PrettyConsole/point.cpp" "KeyboardListener.h" "KeyboardListener.cpp" "Stack.h"   "WindowScaler.cpp" "GameContainer.h" "GameContainer.cpp" "Player.cpp" "Tank.h" "Tank.cpp" "Weapon.h" "Shot.h" "Shot.cpp" "CPUPlayer.h" "CPUPlayer.cpp" "HumanPlayer.cpp" "HumanPlayer.h" "Stash.h" "Stash.cpp" "Weapon.cpp" "PStruct.h" "Ground.h" "Ground.cpp")
 
 #add_subdirectory(cpr)
 #include_directories(${CPR_INCLUDE_DIRS})
