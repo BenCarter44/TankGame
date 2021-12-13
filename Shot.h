@@ -3,6 +3,7 @@
 
 #include "PrettyConsole/point.h"
 #include "PStruct.h"
+#include "Weapon.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
 // #include <iostream>
@@ -18,6 +19,7 @@ private:
 	double angle;
 	int startX;
 	int startY;
+	Weapon w;
 
 public:
 	void calculatePoints();
@@ -28,6 +30,8 @@ public:
 	void setStartX(int x);
 	void setStartY(int y);
 
+	void setWeapon(Weapon w2);
+	Weapon getWeapon();
 
 	double getPower();
 	double getAngle();

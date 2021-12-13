@@ -17,6 +17,7 @@ class Player // this will be a super class. It will have 2 sub classes: HumanPla
 private:
 	string playerName;
 	vector<Stash> weaponHold;
+	int money;
 
 protected:
 	bool isCPU = true;
@@ -35,7 +36,11 @@ public:
 
 	Tank* getTank();
 	
+	int getMoney();
+	void setMoney(int m);
+	void pay(int p);
 
+	vector<Stash> getWeapons();
 
 	virtual Shot aimShot() = 0; // the abstract method!
 
@@ -52,6 +57,8 @@ public:
 			cout << "Q: " + to_string(weaponHold[x].getRemaining()) + " " + weaponHold[x].getWeaponType().getName() + " damages: " + to_string(weaponHold[x].getWeaponType().getDamage()) << '\n';
 		}
 	}
+	void setTank(int x, int y);
+
 
 };
 #endif

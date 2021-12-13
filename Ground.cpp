@@ -111,7 +111,7 @@ void Ground::groundRandomizer()
 		//cout << n << '\n';
 		rStore[r] = (double)n;
 	}
-	
+	//rStore[0] = -25;
 	for (int x = 0; x < width; x++)
 	{
 		double sumOf = 0;
@@ -125,8 +125,8 @@ void Ground::groundRandomizer()
 			double n = rStore[r];
 			sumOf = sumOf + n * cos((2.0 * M_PI / (double)(width * 2)) * x * ( r + 1 ) ) + height / 2.0;
 		}
-		sumOf = sumOf / 7.0;
-		sumOf = (sumOf / 2.0);
+		sumOf = sumOf / max;
+		sumOf = (sumOf / 1.7);
 		randGround[x] = (int)sumOf;
 	}
 /*	cout << height << '\n';

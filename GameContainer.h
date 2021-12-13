@@ -44,8 +44,13 @@ private: // common game elements
 	WindowScaler winX;
 	WindowScaler winY;
 
-	void sleep(unsigned int l);
+	
 
+	//friend bool HumanPlayer::aimMenu(GameContainer& gc);
+	// player stuff
+
+	Player* player1;
+	Player* player2;
 
 public:
 	GameContainer();
@@ -55,6 +60,7 @@ public:
 	void onlinePlayerMenu();
 	bool isGameEnd();
 	void arena();
+	static void sleep(unsigned int l);
 
 
 };

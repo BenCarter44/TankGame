@@ -73,6 +73,14 @@ void Shot::setStartY(int y)
 {
 	startY = y;
 }
+void Shot::setWeapon(Weapon w2)
+{
+	this->w = w2;
+}
+Weapon Shot::getWeapon()
+{
+	return w;
+}
 
 void Shot::calculatePoints()
 {
