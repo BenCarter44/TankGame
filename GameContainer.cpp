@@ -399,12 +399,13 @@ void GameContainer::sleep(unsigned int l)
 void GameContainer::arena()
 {
 
-	// player stuffpppp
-
+	// player stuff
+	
 
 	HumanPlayer ben = HumanPlayer("Ben");
-	HumanPlayer joe = HumanPlayer("Joe");
+	CPUPlayer joe = CPUPlayer("Joe");
 	
+
 	Weapon rock = Weapon("rock", 5, 1);
 	Weapon pebble = Weapon("pebble", 1, 1);
 	Stash st = Stash(rock,100);
@@ -415,6 +416,8 @@ void GameContainer::arena()
 	joe.addWeaponStash(st);
 	joe.addWeaponStash(st2);
 
+	//ben.displayAll();
+	//return;
 	string player1Name = ben.getName();
 	string player2Name = joe.getName();
 
@@ -426,14 +429,14 @@ void GameContainer::arena()
 
 	// set up shapes
 
-	Rectangle2D usernameStatusBoxL = Rectangle2D(winX.getVal(1), winY.getVal(48), winX.getLength(15), winY.getLength(4));
-	Rectangle2D usernameStatusBoxR = Rectangle2D(winX.getVal(84), winY.getVal(48), winX.getLength(15), winY.getLength(4));
+	Rectangle2D* usernameStatusBoxL = new Rectangle2D(winX.getVal(1), winY.getVal(48), winX.getLength(15), winY.getLength(4));
+	Rectangle2D* usernameStatusBoxR = new Rectangle2D(winX.getVal(84), winY.getVal(48), winX.getLength(15), winY.getLength(4));
 	
-	Rectangle2D titleBox = Rectangle2D(winX.getVal(41), winY.getVal(48), winX.getLength(18), winY.getLength(2));
-	Rectangle2D volleyTicker = Rectangle2D(winX.getVal(44), winY.getVal(46), winX.getLength(12), 1);
-	Rectangle2D turnMarker; // = Rectangle2D(winX.getVal(1), winY.getVal(43), winX.getVal(8), 1);
+	Rectangle2D* titleBox = new Rectangle2D(winX.getVal(41), winY.getVal(48), winX.getLength(18), winY.getLength(2));
+	Rectangle2D* volleyTicker = new Rectangle2D(winX.getVal(44), winY.getVal(46), winX.getLength(12), 1);
+	Rectangle2D* turnMarker = new Rectangle2D(winX.getVal(1), winY.getVal(43), winX.getVal(8), 1);
 
-	Rectangle2D dialogBox = Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
+	Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
 	
 
 	// styles
@@ -454,25 +457,25 @@ void GameContainer::arena()
 	dialogBoxIn.setBackgroundColor(127, 127, 127);
 	dialogBoxOut.setBackgroundColor(80, 80, 80);
 
-	usernameStatusBoxL.setFill(usernameBox);
-	usernameStatusBoxR.setFill(usernameBox);
-	titleBox.setFill(titleBackground);
-	volleyTicker.setFill(tickerStyle);
-	turnMarker.setFill(tickerStyle);
+	usernameStatusBoxL->setFill(usernameBox);
+	usernameStatusBoxR->setFill(usernameBox);
+	titleBox->setFill(titleBackground);
+	volleyTicker->setFill(tickerStyle);
+	//turnMarker->setFill(tickerStyle);
 
-	dialogBox.setFill(dialogBoxIn);
-	dialogBox.setBorder(dialogBoxOut);
+	dialogBox->setFill(dialogBoxIn);
+	dialogBox->setBorder(dialogBoxOut);
 	
 
 	// add shapes
 	c.clear();
 	c.addShape(&background);
-	c.addShape(&usernameStatusBoxL);
-	c.addShape(&usernameStatusBoxR);
-	c.addShape(&titleBox);
-	c.addShape(&volleyTicker);
+	c.addShape(usernameStatusBoxL);
+	c.addShape(usernameStatusBoxR);
+	c.addShape(titleBox);
+	c.addShape(volleyTicker);
 	//c.addShape(&turnMarker);
-	c.addShape(&dialogBox);
+	c.addShape(dialogBox);
 
 	// put in text
 
@@ -558,108 +561,136 @@ void GameContainer::arena()
 	{
 		if (turn)
 		{
-			turnMarker.init(winX.getVal(1), winY.getVal(43), winX.getVal(8), 1);
+
+			turnMarker->init(winX.getVal(1), winY.getVal(43), winX.getVal(8), 1);
+			turnMarker->setFill(tickerStyle);
+			c.addShape(turnMarker);
 			c.putString("Player1's turn", winX.getVal(2), winY.getVal(43));
+
+			Rectangle2D turnMarker2 = Rectangle2D(winX.getVal(91), winY.getVal(43), winX.getVal(8), 1);
+			turnMarker2.setFill(backgroundStyle);
+			c.addShape(&turnMarker2);
+
+			c.putString("              ", winX.getVal(92), winY.getVal(43));
+			
 		}
 		else
 		{
-			turnMarker.init(winX.getVal(91), winY.getVal(43), winX.getVal(8), 1);
+			turnMarker->init(winX.getVal(91), winY.getVal(43), winX.getVal(8), 1);
+			turnMarker->setFill(tickerStyle);
+			c.addShape(turnMarker);
+
+			Rectangle2D turnMarker2 = Rectangle2D(winX.getVal(1), winY.getVal(43), winX.getVal(8), 1);
+			turnMarker2.setFill(backgroundStyle);
+			c.addShape(&turnMarker2);
+
+			turnMarker->init(winX.getVal(91), winY.getVal(43), winX.getVal(8), 1);
 			c.putString("Player2's turn", winX.getVal(92), winY.getVal(43));
+			turnMarker->init(winX.getVal(1), winY.getVal(43), winX.getVal(8), 1);
+			c.putString("              ", winX.getVal(2), winY.getVal(43));
 		}
+		Player* shootingPlayer;
+		Player* defensePlayer;
 		if (turn)
 		{
-			
-			
-			//Rectangle2D dialogBox = Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
-
-			//c.putString("Weapon (W): ", winX.getVal(35), winY.getVal(35));
-			
-
-			// get user input
-			
-			//volley++;
-			bool out = ben.aimMenu(c,winX,winY);
-			c.putString(to_string(out), 0, 0);
-			c.smartRender();
-			if (out)
-			{
-				Shot myShot = ben.aimShot();
-				myShot.calculatePoints();
-				vector<PStruct> pts = myShot.getPoints();
-				 // draw the shot
-				Style weaponStyle;
-				weaponStyle.setBackgroundColor(255, 0, 0);
-				Point2D actualPoint;
-
-				for (int pointNumber = 0; pointNumber < pts.size(); pointNumber++)
-				{
-					// cout << (int)pts[pointNumber].x << " " << (int)pts[pointNumber].y << '\n';
-					if (pts[pointNumber].x >= 0 && pts[pointNumber].x < winX.getInMax() && pts[pointNumber].y > 0 && pts[pointNumber].y < winY.getInMin())
-					{
-
-						actualPoint.init((int)winX.getDoubleVal(pts[pointNumber].x), (int)winY.getDoubleVal(pts[pointNumber].y));
-						actualPoint.setFill(weaponStyle);
-						if (!groundHandler.isGround(actualPoint.getAnchorX(), actualPoint.getAnchorY()))
-						{
-							c.addShape(&actualPoint);
-
-						}
-					}
-					else
-					{
-						//	cout << "BAD: " << winX.getVal(pts[pointNumber]->getAnchorX()) << " " << winY.getVal(pts[pointNumber]->getAnchorY()) << '\n';
-					}
-
-				}
-				c.smartRender();
-			}
-			turn = !turn;
+			shootingPlayer = &ben;
+			defensePlayer = &joe;
 		}
 		else
 		{
-			//Rectangle2D dialogBox = Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
+			shootingPlayer = &joe;
+			defensePlayer = &ben;
+		}
+		volley++;
+		turn = !turn;
+		c.addShape(dialogBox);
+		bool out = false;
+		if (!shootingPlayer->isCPUPlayer()) // is shooting player human
+		{
+			out = shootingPlayer->aimMenu(c, winX, winY);
+		}
+		else
+		{
+			out = false;
+		}
+		c.smartRender();
+		if (out) // if they can shoot a valid shot
+		{
+			Shot myShot = shootingPlayer->aimShot();
+			myShot.calculatePoints();
+			Rectangle2D dialogBoxBlackout = Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
+			dialogBoxBlackout.setFill(backgroundStyle);
+			c.addShape(&dialogBoxBlackout);
 
-			//c.putString("Weapon (W): ", winX.getVal(35), winY.getVal(35));
 
+			vector<PStruct> pts = myShot.getPoints();
+			// draw the shot
+			Style weaponStyle;
+			weaponStyle.setBackgroundColor(255, 0, 0);
+			Point2D actualPoint;
 
-			// get user input
-			//volley++;
-			bool out = joe.aimMenu(c, winX, winY);
-			c.putString(to_string(out), 0, 0);
-			c.smartRender();
-			if (out)
+			Style oldStyle;
+			int oldX = 0;
+			int oldY = 0;
+			unsigned char oldChar = ' ';
+			for (int pointNumber = 0; pointNumber < pts.size(); pointNumber++)
 			{
-				Shot myShot = joe.aimShot();
-				myShot.calculatePoints();
-				vector<PStruct> pts = myShot.getPoints();
-				// draw the shot
-				Style weaponStyle;
-				weaponStyle.setBackgroundColor(255, 0, 0);
-				Point2D actualPoint;
-
-				for (int pointNumber = 0; pointNumber < pts.size(); pointNumber++)
+				// cout << (int)pts[pointNumber].x << " " << (int)pts[pointNumber].y << '\n';
+				if (pts[pointNumber].x >= 0 && pts[pointNumber].x < winX.getInMax() && pts[pointNumber].y > 0 && pts[pointNumber].y < winY.getInMin())
 				{
-					// cout << (int)pts[pointNumber].x << " " << (int)pts[pointNumber].y << '\n';
-					if (pts[pointNumber].x >= 0 && pts[pointNumber].x < winX.getInMax() && pts[pointNumber].y > 0 && pts[pointNumber].y < winY.getInMin())
-					{
+					actualPoint.init((int)winX.getDoubleVal(pts[pointNumber].x), (int)winY.getDoubleVal(pts[pointNumber].y));
 
-						actualPoint.init((int)winX.getDoubleVal(pts[pointNumber].x), (int)winY.getDoubleVal(pts[pointNumber].y));
-						actualPoint.setFill(weaponStyle);
-						if (!groundHandler.isGround(actualPoint.getAnchorX(), actualPoint.getAnchorY()))
+					actualPoint.setFill(weaponStyle);
+					if (!groundHandler.isGround(actualPoint.getAnchorX(), actualPoint.getAnchorY()))
+					{
+						if (oldX != 0 || oldY != 0)
 						{
-							c.addShape(&actualPoint);
+							Point2D oldP = Point2D(oldX, oldY);
+
+							oldP.setFill(oldStyle);
+							oldP.putChar(oldChar);
+							c.addShape(&oldP);
 						}
+						oldX = actualPoint.getAnchorX();
+						oldY = actualPoint.getAnchorY();
+						oldStyle.init(c.getSpecificStyle(oldX, oldY));
+						oldChar = c.getSpecificChar(oldX, oldY);
+
+
+						c.addShape(&actualPoint);
 					}
 					else
 					{
-						//	cout << "BAD: " << winX.getVal(pts[pointNumber]->getAnchorX()) << " " << winY.getVal(pts[pointNumber]->getAnchorY()) << '\n';
+						break;
+						//oldX = 0;
+						//oldY = 0;
 					}
-
 				}
+				else
+				{
+					break;
+					//	cout << "BAD: " << winX.getVal(pts[pointNumber]->getAnchorX()) << " " << winY.getVal(pts[pointNumber]->getAnchorY()) << '\n';
+				}
+				sleep(1);
 				c.smartRender();
 			}
-			turn = !turn;
+
+			Point2D oldP = Point2D(oldX, oldY);
+
+			oldP.setFill(oldStyle);
+			oldP.putChar(oldChar);
+			c.addShape(&oldP);
 		}
+		
+		else
+		{
+			string out = "You have no weapons remaining!";
+			c.putString(out, winX.getVal(35), winY.getVal(35));
+			c.smartRender();
+			sleep(2000);
+		}
+
+		
 	}
 
 	

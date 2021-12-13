@@ -17,6 +17,10 @@ public:
 	void saveOtherTank(Tank* t);
 
 	Shot aimShot();
+	bool aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)
+	{
+		return false;
+	}
 
 };
 

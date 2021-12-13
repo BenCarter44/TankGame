@@ -4,29 +4,33 @@
 
 HumanPlayer::HumanPlayer() : Player()
 {
-	oldPower = 0;
-	oldAngle = 0;
+	oldPower = 100;
+	oldAngle = 40;
 	isCPU = false;
+	oldWeapon = new Stash();
 }
 HumanPlayer::HumanPlayer(string name) : Player(name)
 {
-	oldPower = 0;
-	oldAngle = 0;
+	oldPower = 100;
+	oldAngle = 40;
 	isCPU = false;
+	oldWeapon = new Stash();
 }
 void HumanPlayer::init()
 {
-	oldPower = 0;
-	oldAngle = 0;
+	oldPower = 100;
+	oldAngle = 40;
 	Player::init();
 	isCPU = false;
+	oldWeapon = new Stash();
 }
 void HumanPlayer::init(string name)
 {
-	oldPower = 0;
-	oldAngle = 0;
+	oldPower = 100;
+	oldAngle = 40;
 	Player::init(name);
 	isCPU = false;
+	oldWeapon = new Stash();
 }
 
 
@@ -39,8 +43,8 @@ Shot HumanPlayer::aimShot()
 	Shot s;
 	s.setAngle(oldAngle);
 	s.setPower(oldPower / 3.0);
-	s.setWeapon(oldWeapon.useUpWeapon());
-	s.setStartX(tank.getX());
+	s.setWeapon(oldWeapon->useUpWeapon());
+	s.setStartX(tank.getX() + 2);
 	s.setStartY(tank.getY());
 
 
@@ -63,7 +67,7 @@ bool HumanPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)
 	bool adjustWeapon = false;
 	bool adjustPower = false;
 	bool adjustAngle = false;
-	vector<Stash> weaponSelections = getWeapons();
+	vector<Stash*> weaponSelections = getWeapons();
 	if (weaponSelections.size() == 0)
 	{
 		return false;
@@ -78,7 +82,7 @@ bool HumanPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)
 		{
 			weaponNumber = 0;
 		}
-		string out = "Weapon (W): " + weaponSelections[weaponNumber].getWeaponType().getName() + " " + to_string(weaponSelections[weaponNumber].getRemaining()) + "      ";
+		string out = "Weapon (W): " + weaponSelections[weaponNumber]->getWeaponType().getName() + " " + to_string(weaponSelections[weaponNumber]->getRemaining()) + "      ";
 		c.putString(out, winX.getVal(35), winY.getVal(35));
 		string out2 = "Power (P): " + to_string(power) + "   ";
 		c.putString(out2, winX.getVal(35), winY.getVal(34));
@@ -174,7 +178,7 @@ bool HumanPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)
 	}
 	oldPower = power;
 	oldAngle = angle;
-	oldWeapon.init(weaponSelections[weaponNumber].getWeaponType(), weaponSelections[weaponNumber].getRemaining());
+	oldWeapon = weaponSelections[weaponNumber]; // , weaponSelections[weaponNumber].getRemaining());
 
 	return true;
 	

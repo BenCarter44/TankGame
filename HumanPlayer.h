@@ -15,7 +15,7 @@ class HumanPlayer : public Player
 private:
 	int oldPower;
 	int oldAngle;
-	Stash oldWeapon;
+	Stash* oldWeapon;
 public:
 	HumanPlayer();
 	void init();

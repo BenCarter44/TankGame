@@ -6,6 +6,9 @@
 #include <vector>
 #include <iostream>
 
+#include "PrettyConsole/console.h"
+#include "WindowScaler.h"
+
 #include "Tank.h"
 #include "Shot.h"
 #include "Stash.h"
@@ -16,7 +19,7 @@ class Player // this will be a super class. It will have 2 sub classes: HumanPla
 {
 private:
 	string playerName;
-	vector<Stash> weaponHold;
+	vector<Stash*> weaponHold;
 	int money;
 
 protected:
@@ -40,24 +43,30 @@ public:
 	void setMoney(int m);
 	void pay(int p);
 
-	vector<Stash> getWeapons();
+	vector<Stash*> getWeapons();
 
 	virtual Shot aimShot() = 0; // the abstract method!
+	virtual bool aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY) = 0; // the abstract method!
 
-	void addWeaponStash(Stash s)
+	void addWeaponStash(Stash& s)
 	{
-		weaponHold.push_back(s);
+		Stash* newStash = new Stash(s.getWeaponType(), s.getRemaining());
+		weaponHold.push_back(newStash); // create new obj
 	}
 
 	void displayAll()
 	{
-		cout << tank.getHP() << "\n";
+		cout << "\n" << tank.getHP() << "\n";
 		for (int x = 0; x < weaponHold.size(); x++)
 		{
-			cout << "Q: " + to_string(weaponHold[x].getRemaining()) + " " + weaponHold[x].getWeaponType().getName() + " damages: " + to_string(weaponHold[x].getWeaponType().getDamage()) << '\n';
+			cout << "Q: " + to_string(weaponHold[x]->getRemaining()) + " " + weaponHold[x]->getWeaponType().getName() + " damages: " + to_string(weaponHold[x]->getWeaponType().getDamage()) << '\n';
 		}
 	}
 	void setTank(int x, int y);
+	bool isCPUPlayer()
+	{
+		return isCPU;
+	}
 
 
 };
