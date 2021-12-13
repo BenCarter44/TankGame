@@ -67,6 +67,7 @@ public:
 	{
 		return isCPU;
 	}
+	virtual void saveOtherTank(Tank* t) = 0;
 
 
 };

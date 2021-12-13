@@ -24,6 +24,10 @@ public:
 	
 	Shot aimShot();
 	bool aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY);
+	void saveOtherTank(Tank* t)
+	{
+		return; // a do nothing method required by the super class
+	}
 };
 
 

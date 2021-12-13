@@ -2,11 +2,15 @@
 #define CPUPL
 
 #include "Player.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
+#include <random>
 
 class CPUPlayer : public Player
 {
 private:
 	Tank* otherTank;
+	Shot shotHold;
 
 public:
 	CPUPlayer();
@@ -17,10 +21,7 @@ public:
 	void saveOtherTank(Tank* t);
 
 	Shot aimShot();
-	bool aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)
-	{
-		return false;
-	}
+	bool aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY);
 
 };
 

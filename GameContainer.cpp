@@ -402,9 +402,26 @@ void GameContainer::arena()
 	// player stuff
 	
 
-	HumanPlayer ben = HumanPlayer("Ben");
+	CPUPlayer ben = CPUPlayer("Ben");
 	CPUPlayer joe = CPUPlayer("Joe");
+
 	
+	/*
+	Tank t = Tank();
+	t.setX(0);
+	t.setY(5);
+
+
+	joe.saveOtherTank(&t);
+	joe.setTank(100, 15);
+
+	Shot mys = joe.aimShot();
+	cout << '\n';
+	cout << mys.getAngle() << '\n';
+	cout << mys.getPower() << '\n';
+
+	return;
+	*/
 
 	Weapon rock = Weapon("rock", 5, 1);
 	Weapon pebble = Weapon("pebble", 1, 1);
@@ -413,6 +430,7 @@ void GameContainer::arena()
 
 	ben.addWeaponStash(st);
 	ben.addWeaponStash(st2);
+
 	joe.addWeaponStash(st);
 	joe.addWeaponStash(st2);
 
@@ -534,6 +552,7 @@ void GameContainer::arena()
 
 
 	// tanks
+	
 	Rectangle2D tank1 = Rectangle2D(winX.getVal(3), c.getHeight() - totalHeights[winX.getVal(4)] - winY.getLength(2), winX.getLength(4), winY.getLength(2));
 	Style tankStyle;
 	tankStyle.setBackgroundColor(255, 255, 0);
@@ -603,16 +622,17 @@ void GameContainer::arena()
 		}
 		volley++;
 		turn = !turn;
-		c.addShape(dialogBox);
+		
 		bool out = false;
-		if (!shootingPlayer->isCPUPlayer()) // is shooting player human
+		if (shootingPlayer->isCPUPlayer()) // is shooting player human
 		{
-			out = shootingPlayer->aimMenu(c, winX, winY);
+			shootingPlayer->saveOtherTank(defensePlayer->getTank());
 		}
 		else
 		{
-			out = false;
+			c.addShape(dialogBox);
 		}
+		out = shootingPlayer->aimMenu(c, winX, winY);
 		c.smartRender();
 		if (out) // if they can shoot a valid shot
 		{
@@ -665,6 +685,10 @@ void GameContainer::arena()
 						//oldX = 0;
 						//oldY = 0;
 					}
+				}
+				else if (pts[pointNumber].y > winY.getInMin())
+				{
+					 // pass
 				}
 				else
 				{
