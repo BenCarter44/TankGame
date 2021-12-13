@@ -15,6 +15,22 @@ GameContainer::GameContainer()
 	winY.init(50, 0, 0, c.getHeight());
 
 
+
+	// players
+	HumanPlayer* ben = new HumanPlayer("Ben");
+	CPUPlayer* joe = new CPUPlayer("Joe");
+
+	Weapon pebble = Weapon("pebble", 1, 1);
+	Stash st2 = Stash(pebble, 100);
+
+	ben->addWeaponStash(st2);
+
+	joe->addWeaponStash(st2);
+
+	player1 = ben;
+	player2 = joe;
+
+
 	// keys
 	keys.setPauseTime(150);
 	keys2.setPauseTime(80);
@@ -198,6 +214,140 @@ void GameContainer::startMenu()
 
 	endGame = true;
 }
+void GameContainer::mainMenuScreen()
+{
+	c.fillScreen();
+	// Background!
+	c.addShape(&background);
+	// Menu Window. Will have a banner at the top and a selection box.	
+	c.addShape(&title);
+	// Bottom menu window
+	c.addShape(&mainMenu);
+
+	// text
+	c.putString("Tank Game! V1 ", winX.getVal(27), 3);
+	c.putString("By Benjamin Carter ", winX.getVal(28), 4);
+
+
+	string options[] = {
+		"Enter Match",
+		"Visit the shop",
+		"Save Game",
+		"Save and Exit",
+		"Exit without saving"
+	};
+
+	for (int x = 0; x < 5; x++)
+	{
+		string tx = to_string(x + 1) + " - " + options[x];
+		c.putString(tx, winX.getVal(27), 8 + x);
+	}
+	c.setTitle("Tank Game V1");
+	c.render();
+
+#ifndef LINUX
+
+	// get user input
+
+	int cursor = 8;
+	int oldCursor = 8;
+	bool newData = true;
+	int out = 0;
+	while (true)
+	{
+		keys.listen();
+		unsigned char charIn = keys.getKey();
+
+		if (newData)
+		{
+			Rectangle2D itemOld = Rectangle2D(winX.getVal(25), oldCursor, winX.getLength(50), 1);
+			Rectangle2D itemCurrent = Rectangle2D(winX.getVal(25), cursor, winX.getLength(50), 1);
+
+
+			itemCurrent.setFill(selection);
+			itemOld.setFill(mainMenuBackground);
+			c.addShape(&itemOld);
+			c.addShape(&itemCurrent);
+			c.putString(to_string(cursor - 8 + 1) + " - " + options[cursor - 8], winX.getVal(27), cursor);
+			c.putString(to_string(oldCursor - 8 + 1) + " - " + options[oldCursor - 8], winX.getVal(27), oldCursor);
+			c.smartRender();
+			newData = false;
+		}
+		if (charIn == VK_UP)
+		{
+			oldCursor = cursor;
+			cursor--;
+			newData = true;
+		}
+		else if (charIn == VK_DOWN)
+		{
+			oldCursor = cursor;
+			cursor++;
+			newData = true;
+		}
+		else if (charIn == VK_RETURN)
+		{
+			out = cursor - 8;
+			break;
+		}
+		if (cursor < 8)
+		{
+			cursor = 5 + 8 - 1;
+		}
+		else if (cursor >= (8 + 5))
+		{
+			cursor = 8;
+		}
+		sleep(25); // 40fps 
+
+	}
+	// returns out - the number that the user selected. 
+#endif
+
+	if (out == 0)
+	{
+		// start as new player
+		arena();
+	}
+	else if (out == 1)
+	{
+		c.clear();
+		c.addShape(&background);
+		
+		c.putString("The wonderful shop!", 0, 0);
+		c.render();
+		endGame = true;
+	}
+	else if (out == 2)
+	{
+		c.clear();
+		c.addShape(&background);
+
+		c.putString("Save game!", 0, 0);
+		c.render();
+		sleep(2000);
+		mainMenuScreen();
+	}
+	else if (out == 3)
+	{
+		c.addShape(&background);
+
+		c.putString("Save game!", 0, 0);
+		c.render();
+		sleep(2000);
+		mainMenuScreen();
+		endGame = true;
+	}
+	else if (out == 4)
+	{
+		c.clear();
+		c.addShape(&background);
+		c.render();
+		endGame = true;
+	}
+
+	endGame = true;
+}
 void GameContainer::newPlayerMenu()
 {
 
@@ -273,10 +423,11 @@ void GameContainer::newPlayerMenu()
 		}
 		sleep(25);
 	}
-	c.putString(playerName, 0, 0);
-	c.smartRender();
-	sleep(1000);
-	endGame = true;
+	
+	player1->init(playerName);
+	player2->init("CPU");
+	player2->setDifficulty(100);
+	mainMenuScreen();
 
 	// return player name as string playerName
 }
@@ -396,15 +547,43 @@ void GameContainer::sleep(unsigned int l)
 	using namespace std::this_thread;
 	sleep_for(milliseconds(l));
 }
+void GameContainer::printLabelArena()
+{
+	string player1Name = player1->getName();
+	string player2Name = player2->getName();
+
+	Tank* tankPlayer1 = player1->getTank();
+	Tank* tankPlayer2 = player2->getTank();
+	c.putString("Tank Arena!", winX.getVal(41), winY.getVal(48));
+	c.putString(player1Name + " vs. " + player2Name, winX.getVal(41), winY.getVal(47));
+	
+
+	c.putString(player1Name, winX.getVal(1), winY.getVal(48));
+
+	int health = tankPlayer1->getHP();
+	int maxHealth = tankPlayer1->getMaxHP();
+	int percent = (health * 100) / maxHealth;
+	c.putString("Health: " + to_string(health) + "/" + to_string(maxHealth) + "  (" + to_string(percent) + "%)  ", winX.getVal(1), winY.getVal(46));
+
+	int money = player1->getMoney();
+	c.putString("Dollars: $" + to_string(money), winX.getVal(1), winY.getVal(45));
+
+
+	c.putString(player2Name, winX.getVal(99) - player2Name.length(), winY.getVal(48));
+
+	health = tankPlayer2->getHP();
+	maxHealth = tankPlayer2->getMaxHP();
+	percent = (health * 100) / maxHealth;
+	string outString = "  Health: " + to_string(health) + "/" + to_string(maxHealth) + "  (" + to_string(percent) + "%)  ";
+	c.putString(outString, winX.getVal(99) - outString.length(), winY.getVal(46));
+}
 void GameContainer::arena()
 {
 
 	// player stuff
 	
 
-	CPUPlayer ben = CPUPlayer("Ben");
-	CPUPlayer joe = CPUPlayer("Joe");
-
+	
 	
 	/*
 	Tank t = Tank();
@@ -423,24 +602,18 @@ void GameContainer::arena()
 	return;
 	*/
 
-	Weapon rock = Weapon("rock", 5, 1);
-	Weapon pebble = Weapon("pebble", 1, 1);
-	Stash st = Stash(rock,100);
-	Stash st2 = Stash(pebble, 1000);
 
-	ben.addWeaponStash(st);
-	ben.addWeaponStash(st2);
 
-	joe.addWeaponStash(st);
-	joe.addWeaponStash(st2);
+	//joe.addWeaponStash(st);
+	//joe.addWeaponStash(st2);
 
 	//ben.displayAll();
 	//return;
-	string player1Name = ben.getName();
-	string player2Name = joe.getName();
+	string player1Name = player1->getName();
+	string player2Name = player2->getName();
 
-	Tank* tankPlayer1 = ben.getTank();
-	Tank* tankPlayer2 = joe.getTank();
+	Tank* tankPlayer1 = player1->getTank();
+	Tank* tankPlayer2 = player2->getTank();
 	int volley = 1;
 
 
@@ -497,28 +670,8 @@ void GameContainer::arena()
 
 	// put in text
 
-	c.putString("Tank Arena!", winX.getVal(41), winY.getVal(48));
-	c.putString(player1Name + " vs. " + player2Name, winX.getVal(41), winY.getVal(47));
+	printLabelArena();
 	c.putString("Volley: " + to_string(volley) + " of 10", winX.getVal(45), winY.getVal(46));
-
-	c.putString(player1Name, winX.getVal(1), winY.getVal(48));
-
-	int health = tankPlayer1->getHP();
-	int maxHealth = tankPlayer1->getMaxHP();
-	int percent = (health * 100) / maxHealth;
-	c.putString("Health: " + to_string(health) + "/" + to_string(maxHealth) + "  (" + to_string(percent) + ")",winX.getVal(1),winY.getVal(46));
-	
-	int money = ben.getMoney();
-	c.putString("Dollars: $" + to_string(money), winX.getVal(1), winY.getVal(45));
-
-
-	c.putString(player2Name, winX.getVal(99)-player2Name.length(), winY.getVal(48));
-
-	health = tankPlayer2->getHP();
-	maxHealth = tankPlayer2->getMaxHP();
-	percent = (health * 100) / maxHealth;
-	string outString = "Health: " + to_string(health) + "/" + to_string(maxHealth) + "  (" + to_string(percent) + ")";
-	c.putString(outString, winX.getVal(99)-outString.length(), winY.getVal(46));
 
 
 	// ground
@@ -559,7 +712,7 @@ void GameContainer::arena()
 	tank1.setFill(tankStyle);
 	c.addShape(&tank1);
 
-	ben.setTank(3, winY.reverse(c.getHeight() - totalHeights[winX.getVal(4)] - winY.getLength(2)));
+	player1->setTank(3, winY.reverse(c.getHeight() - totalHeights[winX.getVal(4)] - winY.getLength(2)));
 
 
 	Rectangle2D tank2 = Rectangle2D(winX.getVal(93), c.getHeight() - totalHeights[winX.getVal(93)] - winY.getLength(2), winX.getLength(4), winY.getLength(2));
@@ -567,7 +720,7 @@ void GameContainer::arena()
 	tank2.setFill(tankStyle);
 	c.addShape(&tank2);
 
-	joe.setTank(93, winY.reverse(c.getHeight() - totalHeights[winX.getVal(93)] - winY.getLength(2)));
+	player2->setTank(93, winY.reverse(c.getHeight() - totalHeights[winX.getVal(93)] - winY.getLength(2)));
 
 
 	///c.putString(to_string(c.getWidth()) + " " + to_string(c.getHeight()), 0, 0);
@@ -612,15 +765,18 @@ void GameContainer::arena()
 		Player* defensePlayer;
 		if (turn)
 		{
-			shootingPlayer = &ben;
-			defensePlayer = &joe;
+			shootingPlayer = player1;
+			defensePlayer = player2;
 		}
 		else
 		{
-			shootingPlayer = &joe;
-			defensePlayer = &ben;
+			shootingPlayer = player1;
+			defensePlayer = player2;
 		}
-		volley++;
+		if (turn)
+		{
+			volley++;
+		}
 		turn = !turn;
 		
 		bool out = false;
@@ -685,8 +841,22 @@ void GameContainer::arena()
 						//oldX = 0;
 						//oldY = 0;
 					}
+					Tank* opponentTank = defensePlayer->getTank();
+
+					if (pts[pointNumber].x >= opponentTank->getX() && pts[pointNumber].x <= opponentTank->getX() + 4 && pts[pointNumber].y >= opponentTank->getY() && pts[pointNumber].y <= opponentTank->getY() + 2)
+					{
+						// collision!!!!
+
+						opponentTank->takeDamage(myShot.getWeapon().getDamage());
+						shootingPlayer->earnMoney(myShot.getWeapon().getDamage());
+						
+						break;
+					}
+						
+					c.smartRender();
+					sleep(1);
 				}
-				else if (pts[pointNumber].y > winY.getInMin())
+				else if (pts[pointNumber].y >= winY.getInMin())
 				{
 					 // pass
 				}
@@ -695,8 +865,8 @@ void GameContainer::arena()
 					break;
 					//	cout << "BAD: " << winX.getVal(pts[pointNumber]->getAnchorX()) << " " << winY.getVal(pts[pointNumber]->getAnchorY()) << '\n';
 				}
-				sleep(1);
-				c.smartRender();
+				
+				
 			}
 
 			Point2D oldP = Point2D(oldX, oldY);
@@ -708,13 +878,19 @@ void GameContainer::arena()
 		
 		else
 		{
-			string out = "You have no weapons remaining!";
-			c.putString(out, winX.getVal(35), winY.getVal(35));
-			c.smartRender();
-			sleep(2000);
+			if (!shootingPlayer->isCPUPlayer())
+			{
+				c.addShape(dialogBox);
+				string out = "You have no weapons remaining!";
+				c.putString(out, winX.getVal(35), winY.getVal(35));
+				c.smartRender();
+				sleep(2000);
+			}
 		}
 
-		
+		printLabelArena();
+		c.putString("Volley: " + to_string(volley) + " of 10", winX.getVal(45), winY.getVal(46));
+		c.smartRender();
 	}
 
 	

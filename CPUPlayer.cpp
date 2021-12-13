@@ -67,6 +67,18 @@ bool CPUPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)
 		return false;
 	}
 
+	// randomization
+	srand(time(0));
+	int offsetN = (rand() % difficulty) * ((rand() % 2) * -1); // adjusts the power
+	
+	double of = offsetN / 3.0;
+	maxPower = maxPower + of;
+	int offsetA = rand() % difficulty * ((rand() % 2) * -1);
+
+	double af = offsetA * .15;
+	maxTheta = maxTheta + af;
+	
+
 	shotHold.init();
 	shotHold.setStartX(tank.getX());
 	shotHold.setStartY(tank.getY());

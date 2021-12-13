@@ -82,7 +82,7 @@ bool HumanPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)
 		{
 			weaponNumber = 0;
 		}
-		string out = "Weapon (W): " + weaponSelections[weaponNumber]->getWeaponType().getName() + " " + to_string(weaponSelections[weaponNumber]->getRemaining()) + "      ";
+		string out = "Weapon (W): " + weaponSelections[weaponNumber]->getWeaponType().getName() + " " + to_string(weaponSelections[weaponNumber]->getRemaining()) + "ct. Damage: " + to_string(weaponSelections[weaponNumber]->getWeaponType().getDamage()) + "    ";
 		c.putString(out, winX.getVal(35), winY.getVal(35));
 		string out2 = "Power (P): " + to_string(power) + "   ";
 		c.putString(out2, winX.getVal(35), winY.getVal(34));

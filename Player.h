@@ -28,9 +28,9 @@ protected:
 
 public:
 	Player();
-	void init();
+	virtual void init();
 	Player(string name);
-	void init(string name);
+	virtual void init(string name);
 	string getName()
 	{
 		return playerName;
@@ -41,6 +41,7 @@ public:
 	
 	int getMoney();
 	void setMoney(int m);
+	void earnMoney(int p);
 	void pay(int p);
 
 	vector<Stash*> getWeapons();
@@ -68,7 +69,8 @@ public:
 		return isCPU;
 	}
 	virtual void saveOtherTank(Tank* t) = 0;
-
+	virtual void setDifficulty(int df) = 0;
+	virtual int getDifficulty() = 0;
 
 };
 #endif

@@ -44,6 +44,10 @@ void Player::pay(int p)
 {
 	money = money - p;
 }
+void Player::earnMoney(int p)
+{
+	money = money + p;
+}
 
 vector<Stash*> Player::getWeapons()
 {

@@ -28,6 +28,14 @@ public:
 	{
 		return; // a do nothing method required by the super class
 	}
+	void setDifficulty(int df)
+	{
+
+	}
+	int getDifficulty()
+	{
+		return 0;
+	}
 };
 
 
