@@ -28,6 +28,7 @@ private: // common game elements
 	Style backgroundStyle;
 	Style titleBackground;
 	Style mainMenuBackground;
+	Style mainMenuSubStyle;
 	Style selection;
 	Style textBoxBackground;
 
@@ -36,6 +37,7 @@ private: // common game elements
 	Rectangle2D background;
 	Rectangle2D title;
 	Rectangle2D mainMenu;
+	Rectangle2D mainMenuSub;
 
 	KeyboardListener keys;
 	KeyboardListener keys2;

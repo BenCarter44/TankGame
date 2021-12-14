@@ -1,5 +1,7 @@
 
 #include "GameContainer.h"
+// 
+// https://textkool.com/en/ascii-art-generator?hl=default&vl=default&font=Big&text=Tank%20Game%20V2%0A
 GameContainer::GameContainer()
 {
 	// setup game globals
@@ -90,15 +92,18 @@ GameContainer::GameContainer()
 	textBoxBackground.setBackgroundColor(150, 150, 150);
 	textBoxBackground.setTextColor(255, 255, 255);
 
+	mainMenuSubStyle.setBackgroundColor(25, 25, 25);
+
 	// shapes
 	background.init(0, 0, c.getWidth(), c.getHeight());
 	title.init(winX.getVal(25), 2, winX.getVal(50), 9);
 	mainMenu.init(winX.getVal(25),12, winX.getVal(50), c.getHeight() - 5 -11);
-
+	mainMenuSub.init(winX.getVal(25)+2, 12+1, winX.getVal(50), c.getHeight() - 5 - 11);
 	// patches
 	background.setFill(backgroundStyle);
 	title.setFill(titleBackground);
 	mainMenu.setFill(mainMenuBackground);
+	mainMenuSub.setFill(mainMenuSubStyle);
 
 }
 void GameContainer::startMenu()
@@ -109,6 +114,7 @@ void GameContainer::startMenu()
 	// Menu Window. Will have a banner at the top and a selection box.	
 	c.addShape(&title);
 	// Bottom menu window
+	c.addShape(&mainMenuSub);
 	c.addShape(&mainMenu);
 
 	// text
@@ -141,7 +147,7 @@ void GameContainer::startMenu()
 		string tx = to_string(x + 1) + " - " + options[x];
 		c.putString(tx, winX.getVal(27), 13 + x);
 	}
-	c.setTitle("Tank Game V1");
+	c.setTitle("Tank Game V2 - Benjamin Carter");
 	c.render();
 
 #ifndef LINUX
@@ -236,11 +242,35 @@ void GameContainer::mainMenuScreen()
 	// Menu Window. Will have a banner at the top and a selection box.	
 	c.addShape(&title);
 	// Bottom menu window
+	c.addShape(&mainMenuSub);
 	c.addShape(&mainMenu);
 
 	// text
-	c.putString("Welcome " + player1->getName() + "!", winX.getVal(27), 3);
-	c.putString("Tank Game By Benjamin Carter ", winX.getVal(28), 4);
+	
+
+	
+
+	string fancyTitle[] =
+	{
+		"  _______          _       _____                       __      _____  ",
+		" |__   __|        | |     / ____|                      \\ \\    / /__ \\ ",
+		"    | | __ _ _ __ | | __ | |  __  __ _ _ __ ___   ___   \\ \\  / /   ) |",
+		"    | |/ _` | '_ \\| |/ / | | |_ |/ _` | '_ ` _ \\ / _ \\   \\ \\/ /   / / ",
+		"    | | (_| | | | |   <  | |__| | (_| | | | | | |  __/    \\  /   / /_ ",
+		"    |_|\\__,_|_| |_|_|\\_\\  \\_____|\\__,_|_| |_| |_|\\___|     \\/   |____|"
+	};
+
+	for (int x = 0; x < 6; x++)
+	{
+		c.putString(fancyTitle[x], winX.getVal(27), 3 + x);
+
+	}
+	c.putString("By Benjamin Carter ", winX.getVal(28), 4 + 6);
+	c.putString("Welcome " + player1->getName() + "!", winX.getVal(55), 4 + 6);
+
+
+	// text
+
 
 
 	string options[] = {
@@ -254,17 +284,16 @@ void GameContainer::mainMenuScreen()
 	for (int x = 0; x < 5; x++)
 	{
 		string tx = to_string(x + 1) + " - " + options[x];
-		c.putString(tx, winX.getVal(27), 8 + x);
+		c.putString(tx, winX.getVal(27), 13 + x);
 	}
-	c.setTitle("Tank Game V1");
 	c.render();
 
 #ifndef LINUX
 
 	// get user input
 	sleep(100);
-	int cursor = 8;
-	int oldCursor = 8;
+	int cursor = 13;
+	int oldCursor = 13;
 	bool newData = true;
 	int out = 0;
 	while (true)
@@ -283,8 +312,8 @@ void GameContainer::mainMenuScreen()
 			itemOld.setFill(mainMenuBackground);
 			c.addShape(&itemOld);
 			c.addShape(&itemCurrent);
-			c.putString(to_string(cursor - 8 + 1) + " - " + options[cursor - 8], winX.getVal(27), cursor);
-			c.putString(to_string(oldCursor - 8 + 1) + " - " + options[oldCursor - 8], winX.getVal(27), oldCursor);
+			c.putString(to_string(cursor - 13 + 1) + " - " + options[cursor - 13], winX.getVal(27), cursor);
+			c.putString(to_string(oldCursor - 13 + 1) + " - " + options[oldCursor - 13], winX.getVal(27), oldCursor);
 			c.smartRender();
 			newData = false;
 		}
@@ -302,16 +331,16 @@ void GameContainer::mainMenuScreen()
 		}
 		else if (charIn == VK_RETURN)
 		{
-			out = cursor - 8;
+			out = cursor - 13;
 			break;
 		}
-		if (cursor < 8)
+		if (cursor < 13)
 		{
-			cursor = 5 + 8 - 1;
+			cursor = 5 + 13 - 1;
 		}
-		else if (cursor >= (8 + 5))
+		else if (cursor >= (13 + 5))
 		{
-			cursor = 8;
+			cursor = 13;
 		}
 		sleep(25); // 40fps 
 
@@ -809,20 +838,39 @@ void GameContainer::newPlayerMenu()
 	c.addShape(&title);
 	// Bottom menu window
 
-	Rectangle2D mainMenu = Rectangle2D(winX.getVal(25), 7, winX.getLength(50), 6);
+	//Rectangle2D mainMenu = Rectangle2D(winX.getVal(25), 7, winX.getLength(50), 6);
 	
-	mainMenu.setFill(mainMenuBackground);
+	//mainMenu.setFill(mainMenuBackground);
+	c.addShape(&mainMenuSub);
 	c.addShape(&mainMenu);
 
-	Rectangle2D textBox = Rectangle2D(winX.getVal(26), 10, winX.getLength(48), 1);	
+	Rectangle2D textBox = Rectangle2D(winX.getVal(26), 15, winX.getLength(48), 1);	
 	textBox.setFill(textBoxBackground);
+
 	c.addShape(&textBox);
 
+	string fancyTitle[] =
+	{
+		"  _______          _       _____                       __      _____  ",
+		" |__   __|        | |     / ____|                      \\ \\    / /__ \\ ",
+		"    | | __ _ _ __ | | __ | |  __  __ _ _ __ ___   ___   \\ \\  / /   ) |",
+		"    | |/ _` | '_ \\| |/ / | | |_ |/ _` | '_ ` _ \\ / _ \\   \\ \\/ /   / / ",
+		"    | | (_| | | | |   <  | |__| | (_| | | | | | |  __/    \\  /   / /_ ",
+		"    |_|\\__,_|_| |_|_|\\_\\  \\_____|\\__,_|_| |_| |_|\\___|     \\/   |____|"
+	};
 
+	for (int x = 0; x < 6; x++)
+	{
+		c.putString(fancyTitle[x], winX.getVal(27), 3 + x);
+
+	}
+	c.putString("By Benjamin Carter ", winX.getVal(28), 4 + 6);
+
+	
 	// text
-	c.putString("Welcome new player! ", winX.getVal(27), 8);
-	c.putString("What is your name? ", winX.getVal(28), 9);
-	c.smartRender();
+	c.putString("Welcome new player! ", winX.getVal(27), 13);
+	c.putString("What is your name? ", winX.getVal(28), 14);
+	c.render();
 
 	
 
@@ -868,8 +916,8 @@ void GameContainer::newPlayerMenu()
 			{
 				dump = dump + ' ';
 			}
-			c.putString(dump, winX.getVal(26), 10);
-			c.putString(playerName, winX.getVal(26), 10);
+			c.putString(dump, winX.getVal(26), 15);
+			c.putString(playerName, winX.getVal(26), 15);
 			c.smartRender();
 		}
 		sleep(25);
@@ -891,13 +939,36 @@ void GameContainer::loadPlayerMenu()
 	// Menu Window. Will have a banner at the top and a selection box.	
 	c.addShape(&title);
 	// Bottom menu window
+	c.addShape(&mainMenuSub);
 	c.addShape(&mainMenu);
 
-	// text
-	c.putString("Tank Game! V1 ", winX.getVal(27), 3);
-	c.putString("By Benjamin Carter ", winX.getVal(28), 4);
+	Rectangle2D textBox = Rectangle2D(winX.getVal(26), 14, winX.getLength(48), 1);
+	textBox.setFill(textBoxBackground);
 
-	c.putString("Pick a player to load:", winX.getVal(27), 8);
+	c.addShape(&textBox);
+
+	string fancyTitle[] =
+	{
+		"  _______          _       _____                       __      _____  ",
+		" |__   __|        | |     / ____|                      \\ \\    / /__ \\ ",
+		"    | | __ _ _ __ | | __ | |  __  __ _ _ __ ___   ___   \\ \\  / /   ) |",
+		"    | |/ _` | '_ \\| |/ / | | |_ |/ _` | '_ ` _ \\ / _ \\   \\ \\/ /   / / ",
+		"    | | (_| | | | |   <  | |__| | (_| | | | | | |  __/    \\  /   / /_ ",
+		"    |_|\\__,_|_| |_|_|\\_\\  \\_____|\\__,_|_| |_| |_|\\___|     \\/   |____|"
+	};
+
+	for (int x = 0; x < 6; x++)
+	{
+		c.putString(fancyTitle[x], winX.getVal(27), 3 + x);
+
+	}
+	c.putString("By Benjamin Carter ", winX.getVal(28), 4 + 6);
+
+
+	// text
+
+
+	c.putString("Pick a player to load:", winX.getVal(27), 14);
 	
 	
 	FileSaver fs("tankTest.txt");
@@ -923,7 +994,7 @@ void GameContainer::loadPlayerMenu()
 	{
 		//cout << options[x] << endl;
 		string tx = to_string(x + 1) + " - " + options[x];
-		c.putString(tx, winX.getVal(27), 9 + x);
+		c.putString(tx, winX.getVal(27), 16 + x);
 	}
 	//return;
 	c.smartRender();
@@ -932,8 +1003,8 @@ void GameContainer::loadPlayerMenu()
 
 	// get user input
 
-	int cursor = 9;
-	int oldCursor = 9;
+	int cursor = 16;
+	int oldCursor = 16;
 	bool newData = true;
 	int out = 0;
 	while (true)
@@ -951,8 +1022,8 @@ void GameContainer::loadPlayerMenu()
 			itemOld.setFill(mainMenuBackground);
 			c.addShape(&itemOld);
 			c.addShape(&itemCurrent);
-			c.putString(to_string(cursor - 9 + 1) + " - " + options[cursor - 9], winX.getVal(27), cursor);
-			c.putString(to_string(oldCursor - 9 + 1) + " - " + options[oldCursor - 9], winX.getVal(27), oldCursor);
+			c.putString(to_string(cursor - 16 + 1) + " - " + options[cursor - 16], winX.getVal(27), cursor);
+			c.putString(to_string(oldCursor - 16 + 1) + " - " + options[oldCursor - 16], winX.getVal(27), oldCursor);
 			c.smartRender();
 			newData = false;
 		}
@@ -970,16 +1041,16 @@ void GameContainer::loadPlayerMenu()
 		}
 		else if (charIn == VK_RETURN)
 		{
-			out = cursor - 9;
+			out = cursor - 16;
 			break;
 		}
-		if (cursor < 9)
+		if (cursor < 16)
 		{
-			cursor = optionSize + 9 - 1;
+			cursor = optionSize + 16 - 1;
 		}
-		else if (cursor >= (9 + optionSize))
+		else if (cursor >= (16 + optionSize))
 		{
-			cursor = 9;
+			cursor = 16;
 		}
 		sleep(25); // 40fps 
 
