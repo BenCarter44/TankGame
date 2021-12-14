@@ -61,6 +61,7 @@ public:
 	void mainMenuScreen();
 	bool isGameEnd();
 	void arena();
+	void shop();
 	static void sleep(unsigned int l);
 
 

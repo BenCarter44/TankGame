@@ -6,8 +6,8 @@ GameContainer::GameContainer()
 	
 	endGame = !c.getSupport();
 	cout << "Please resize screen now to approporate size! Must be above 40x21";
+	
 	sleep(5000);
-
 	c.init();
 	endGame = endGame || (c.getHeight() < 21 || c.getWidth() < 40);
 
@@ -20,15 +20,16 @@ GameContainer::GameContainer()
 	HumanPlayer* ben = new HumanPlayer("Ben");
 	CPUPlayer* joe = new CPUPlayer("Joe");
 
-	Weapon pebble = Weapon("pebble", 1, 1);
-	Stash st2 = Stash(pebble, 100);
-
+	Weapon pebble = Weapon("Pebbles", 1, 1);
+	Stash st2 = Stash(pebble, 200);
+	ben->setMoney(1000);
 	ben->addWeaponStash(st2);
 
 	joe->addWeaponStash(st2);
 
 	player1 = ben;
 	player2 = joe;
+
 
 
 	// keys
@@ -312,12 +313,7 @@ void GameContainer::mainMenuScreen()
 	}
 	else if (out == 1)
 	{
-		c.clear();
-		c.addShape(&background);
-		
-		c.putString("The wonderful shop!", 0, 0);
-		c.render();
-		endGame = true;
+		shop();
 	}
 	else if (out == 2)
 	{
@@ -348,6 +344,410 @@ void GameContainer::mainMenuScreen()
 	}
 
 	endGame = true;
+}
+void GameContainer::shop()
+{
+	c.fillScreen();
+	// Background!
+	c.addShape(&background);
+	// Menu Window. Will have a banner at the top and a selection box.	
+	
+
+
+	// background box
+	Rectangle2D* back1 = new Rectangle2D(winX.getVal(6), winY.getVal(42), winX.getLength(89), winY.getLength(36));
+	Rectangle2D* back3 = new Rectangle2D(winX.getVal(5), winY.getVal(43), winX.getLength(89), winY.getLength(36));
+	Rectangle2D* back2 = new Rectangle2D(winX.getVal(3), winY.getVal(47), winX.getLength(20), winY.getLength(5));
+	Rectangle2D* back4 = new Rectangle2D(winX.getVal(7), winY.getVal(38), winX.getLength(38), winY.getLength(29));
+	Rectangle2D* highlight1 = new Rectangle2D(winX.getVal(7), winY.getVal(42), winX.getLength(25), winY.getLength(2));
+	Rectangle2D* highlight2 = new Rectangle2D(winX.getVal(8), winY.getVal(36), winX.getLength(35), 1);
+	Rectangle2D* highlight3 = new Rectangle2D(winX.getVal(83), winY.getVal(44), winX.getLength(9), 1);
+
+	Rectangle2D* highlight4 = new Rectangle2D(winX.getVal(51), winY.getVal(42), winX.getLength(9), 1);
+
+
+	// styles
+	
+	Style s;
+	s.setBackgroundColor(1);
+	back1->setFill(s);
+	Style s2;
+	s2.setBackgroundColor(2);
+	back2->setFill(s2);
+	Style s3;
+	s3.setBackgroundColor(3);
+	back3->setFill(s3);
+	Style s4;
+	s4.setBackgroundColor(4);
+	back4->setFill(s4);
+	Style s5;
+	s5.setBackgroundColor(5);
+	highlight1->setFill(s5);
+	Style s6;
+	s6.setBackgroundColor(6);
+	highlight2->setFill(s6);
+	Style s7;
+	s7.setBackgroundColor(7);
+	highlight3->setFill(s7);
+	Style s8;
+	s8.setBackgroundColor(2);
+	highlight4->setFill(s8);
+
+	c.addShape(back1);
+	c.addShape(back2);
+	c.addShape(back3);
+	c.addShape(back4);
+	c.addShape(highlight1);
+	c.addShape(highlight2);
+	c.addShape(highlight3);
+	c.addShape(highlight4);
+
+//	cout << '\n';
+//	cout << player1->getMoney();
+//	return;
+	c.putString("Store", winX.getVal(51), winY.getVal(42));
+	c.putString("Tank Game!", winX.getVal(4), winY.getVal(46));
+	c.putString("You have $" + to_string(player1->getMoney()), winX.getVal(7), winY.getVal(42));
+	int percent = (player1->getTank()->getHP() * 100) / player1->getTank()->getMaxHP();
+	c.putString("Your tank has currrently " + to_string(player1->getTank()->getHP()) + " out of " + to_string(player1->getTank()->getMaxHP()) + "hp - " + to_string(percent) + "% left", winX.getVal(7), winY.getVal(41));
+	c.putString("Your current stash: ", winX.getVal(8), winY.getVal(36));
+	c.putString("Press Q to quit ", winX.getVal(83), winY.getVal(44));
+
+
+
+
+	Weapon* weapons = new Weapon[10];
+	weapons[0].init("Pebbles", 1, 1);
+	weapons[1].init("Rock", 3, 1);
+	weapons[2].init("Small Shot", 10, 1);
+	weapons[3].init("Bomb",25, 1);
+	weapons[4].init("Light Rocket", 50, 1);
+	weapons[5].init("Big Shot", 60, 1);
+	weapons[6].init("Heavy Rocket",75, 1);
+	weapons[7].init("Standard Missle", 120, 1);
+	weapons[8].init("Jumbo Missle",250, 1);
+	weapons[9].init("Nuke", 750, 1);
+
+
+	// display each weapon
+	bool color = false;
+	unsigned char allSelections[] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L' };
+	int costs[] = { 1,10,1,2,15,40,50,80,120,180,250,1000 };
+
+	costs[0] = player1->getTank()->getMaxHP() - player1->getTank()->getHP();
+	costs[0] = costs[0] / 2;
+
+	for (int x = 0; x < 12; x++)
+	{
+		Rectangle2D* r = new Rectangle2D(winX.getVal(52 + 11 * (x % 3)), winY.getVal(40 - 7 * (x / 3)), winX.getLength(11), winY.getLength(6));
+		Style sty;
+		sty.setTextColor(0);
+		if (color)
+		{
+			sty.setBackgroundColor(10);
+		}
+		else
+		{
+			sty.setBackgroundColor(11);
+		}
+		r->setFill(sty);
+		color = !color;
+		c.addShape(r);
+
+		if (x == 0)
+		{
+			c.putString("Repair tank",winX.getVal(53), winY.getVal(39));
+			c.putString("Cost: $" + to_string(costs[x]), winX.getVal(54), winY.getVal(37));
+			c.putString("Press " + string(1,allSelections[x]) + " to buy", winX.getVal(54), winY.getVal(36));
+		}
+		else if (x == 1)
+		{
+			c.putString("Add Armor", winX.getVal(53 + 11 * (x % 3)), winY.getVal(39 - 7 * (x / 3)));
+			c.putString("Cost: $" + to_string(costs[x]), winX.getVal(54 + 11 * (x % 3)), winY.getVal(37 - 7 * (x / 3) ));
+			c.putString("Press " + string(1, allSelections[x]) + " to buy", winX.getVal(54 + 11 * (x % 3)), winY.getVal(36 - 7 * (x / 3)));
+		}
+		else
+		{
+			//cout << x << '\n';
+			c.putString("Buy: " + weapons[x - 2].getName(), winX.getVal(53 + 11 * (x % 3)), winY.getVal(39 - 7 * (x / 3)));
+			c.putString("Damage: " + to_string(weapons[x - 2].getDamage()), winX.getVal(53 + 11 * (x % 3)), winY.getVal(38 - 7 * (x / 3)));
+			c.putString("Cost: $" + to_string(costs[x]), winX.getVal(54 + 11 * (x % 3)), winY.getVal(37 - 7 * (x / 3)));
+			c.putString("Press " + string(1, allSelections[x]) + " to buy", winX.getVal(54 + 11 * (x % 3)), winY.getVal(36 - 7 * (x / 3)));
+		}
+		c.smartRender();
+		//sleep(50);
+
+		delete r;
+	}
+
+	vector<Stash*> myStash = player1->getWeapons();
+
+
+	for (int x = 0; x < myStash.size(); x++)
+	{
+		string out = myStash[x]->getWeaponType().getName() + " damage of " + to_string(myStash[x]->getWeaponType().getDamage()) + " - Remaining: " + to_string(myStash[x]->getRemaining());
+		c.putString(out, winX.getVal(9), winY.getVal(35) + x);
+		
+		c.smartRender();
+		//sleep(50);
+
+	}
+
+	KeyboardListener ky(120);
+
+	for (int x = 0; x < 12; x++)
+	{
+		ky.addKey(allSelections[x]);
+	}
+	ky.addKey('Q');
+	bool done = false;
+	unsigned char inc = 0;
+	int selection = 0;
+	while (!done)
+	{
+		ky.listen();
+		inc = ky.getKey();
+		for (int x = 0; x < 12; x++)
+		{
+			if (allSelections[x] == inc)
+			{
+				selection = x;
+				done = true;
+				break;
+			}
+		}
+		if (inc == 'Q')
+		{
+			mainMenuScreen();
+			return;
+		}
+	}
+	if (selection == 0)
+	{
+		// repair!
+		Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
+
+
+		// styles
+
+		Style dialogBoxIn;
+		Style dialogBoxOut;
+
+		dialogBoxIn.setBackgroundColor(127, 127, 127);
+		dialogBoxOut.setBackgroundColor(80, 80, 80);
+		dialogBox->setFill(dialogBoxIn);
+		dialogBox->setBorder(dialogBoxOut);
+		c.addShape(dialogBox);
+		
+
+		int money = player1->getMoney();
+		if (costs[0] <= money)
+		{
+
+			c.putString("Repair tank for " + to_string(costs[0]), winX.getVal(35), winY.getVal(35));
+			c.putString("Yes - (Y) or No (N)", winX.getVal(35), winY.getVal(34));
+			c.smartRender();
+
+			KeyboardListener subKey(150);
+			subKey.addKey('Y');
+			subKey.addKey('N');
+			subKey.addKey('Q');
+			while (true)
+			{
+				subKey.listen();
+				unsigned char inc = subKey.getKey();
+				if (inc == 'Y')
+				{
+					player1->getTank()->repair();
+					player1->pay(costs[0]);
+					
+					mainMenuScreen();
+					break;
+				}
+				else if(inc == 'N' || inc == 'Q')
+				{
+					shop();
+					break;
+				}
+			}
+		}
+		else
+		{
+			c.putString("Not enough funds!", winX.getVal(35), winY.getVal(35));
+			c.smartRender();
+			sleep(2000);
+		}
+
+	}
+	else if (selection == 1)
+	{
+		// armor!
+		Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(6));
+
+
+		// styles
+
+		Style dialogBoxIn;
+		Style dialogBoxOut;
+
+		dialogBoxIn.setBackgroundColor(127, 127, 127);
+		dialogBoxOut.setBackgroundColor(80, 80, 80);
+		
+		dialogBox->setFill(dialogBoxIn);
+		dialogBox->setBorder(dialogBoxOut);
+
+		c.addShape(dialogBox);
+
+
+		int money = player1->getMoney();
+		int quantity = 0;
+		
+
+		c.putString("Add armor (1 hit point) for " + to_string(costs[1]), winX.getVal(35), winY.getVal(35));
+		c.putString("Quantity to order: " + to_string(quantity),winX.getVal(35), winY.getVal(34));
+		c.putString("Total Cost: " + to_string(quantity * costs[selection]), winX.getVal(35), winY.getVal(33));
+		c.putString("Enter to order or (Q) to quit", winX.getVal(35), winY.getVal(32));
+		c.smartRender();
+
+		KeyboardListener subKey(150);
+		subKey.addKey(VK_UP);
+		subKey.addKey(VK_DOWN);
+		subKey.addKey('Q');
+		subKey.addKey(VK_RETURN);
+		
+		while (true)
+		{
+			subKey.listen();
+			unsigned char inc = subKey.getKey();
+			if (inc == VK_RETURN)
+			{
+				if (costs[1] * quantity <= money)
+				{
+					player1->getTank()->setMaxHP(player1->getTank()->getMaxHP() + quantity);
+					player1->pay(costs[1] * quantity);
+					mainMenuScreen();
+					break;
+				}
+				else
+				{
+					c.addShape(dialogBox);
+					c.putString("Not enough funds!", winX.getVal(35), winY.getVal(35));
+					c.smartRender();
+					sleep(2000);
+					shop();
+					break;
+				}
+			}
+			else if (inc == 'Q')
+			{
+				shop();
+				break;
+			}
+			else if (inc == VK_UP)
+			{
+				quantity++;
+				c.putString("Quantity to order: " + to_string(quantity) + "  ", winX.getVal(35), winY.getVal(34));
+				c.putString("Total Cost: " + to_string(quantity * costs[selection]) + "  ", winX.getVal(35), winY.getVal(33));
+				c.smartRender();
+			}
+			else if (inc == VK_DOWN)
+			{
+				quantity--;
+				c.putString("Quantity to order: " + to_string(quantity) + "  ", winX.getVal(35), winY.getVal(34));
+				c.putString("Total Cost: " + to_string(quantity * costs[selection]) + "  ", winX.getVal(35), winY.getVal(33));
+				c.smartRender();
+			}
+		}
+		
+	
+	}
+	else if (selection > 1)
+	{
+		// weapons
+		Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(6));
+
+
+		// styles
+
+		Style dialogBoxIn;
+		Style dialogBoxOut;
+
+		dialogBoxIn.setBackgroundColor(127, 127, 127);
+		dialogBoxOut.setBackgroundColor(80, 80, 80);
+
+		dialogBox->setFill(dialogBoxIn);
+		dialogBox->setBorder(dialogBoxOut);
+
+		c.addShape(dialogBox);
+
+
+		int money = player1->getMoney();
+		int quantity = 0;
+
+		Weapon wep = weapons[selection - 2];
+		c.putString("Buy " + wep.getName() + " with " + to_string(wep.getDamage()) + "pt damage", winX.getVal(35), winY.getVal(35));
+		c.putString("Quantity to order: " + to_string(quantity), winX.getVal(35), winY.getVal(34));
+		c.putString("Total Cost: " + to_string(quantity * costs[selection]), winX.getVal(35), winY.getVal(33));
+		c.putString("Enter to order or (Q) to quit", winX.getVal(35), winY.getVal(32));
+		c.smartRender();
+
+		KeyboardListener subKey(150);
+		subKey.addKey(VK_UP);
+		subKey.addKey(VK_DOWN);
+		subKey.addKey('Q');
+		subKey.addKey(VK_RETURN);
+
+		while (true)
+		{
+			subKey.listen();
+			unsigned char inc = subKey.getKey();
+			if (inc == VK_RETURN)
+			{
+				if (costs[selection] * quantity <= money)
+				{
+					Stash newStash = Stash(wep, quantity);
+					player1->addWeaponStash(newStash);
+					player1->pay(costs[selection] * quantity);
+					mainMenuScreen();
+					break;
+				}
+				else
+				{
+					c.addShape(dialogBox);
+					c.putString("Not enough funds!", winX.getVal(35), winY.getVal(35));
+					c.smartRender();
+					sleep(2000);
+					shop();
+					break;
+				}
+			}
+			else if (inc == 'Q')
+			{
+				shop();
+				break;
+			}
+			else if (inc == VK_UP)
+			{
+				quantity++;
+				c.putString("Quantity to order: " + to_string(quantity) + "  ", winX.getVal(35), winY.getVal(34));
+				c.putString("Total Cost: " + to_string(quantity * costs[selection]) + "  ", winX.getVal(35), winY.getVal(33));
+				c.smartRender();
+			}
+			else if (inc == VK_DOWN)
+			{
+				quantity--;
+				c.putString("Quantity to order: " + to_string(quantity) + "  ", winX.getVal(35), winY.getVal(34));
+				c.putString("Total Cost: " + to_string(quantity * costs[selection]) + "  ", winX.getVal(35), winY.getVal(33));
+				c.smartRender();
+			}
+		}
+
+	}
+	
+	// pop up window. Ask user for amount or exit.
+	endGame = true;
+
+
 }
 void GameContainer::newPlayerMenu()
 {
@@ -424,8 +824,9 @@ void GameContainer::newPlayerMenu()
 		}
 		sleep(25);
 	}
-	
+	int o = player1->getMoney();
 	player1->init(playerName);
+	player1->setMoney(o);
 	player2->init("CPU");
 	player2->setDifficulty(100);
 	mainMenuScreen();
@@ -729,9 +1130,28 @@ void GameContainer::arena()
 	c.render(); // render is faster when the whole screen is to be written.
 
 	
+	int damageP1 = player1->getTank()->getHP();
+	int damageP2 = player1->getTank()->getHP();
 	bool turn = true; // true if player 1
 	while (volley < 11)
 	{
+		Player* shootingPlayer;
+		Player* defensePlayer;
+
+		if (turn)
+		{
+			shootingPlayer = player1;
+			defensePlayer = player2;
+		}
+		else
+		{
+			shootingPlayer = player2;
+			defensePlayer = player1;
+		}
+		if (turn)
+		{
+			volley++;
+		}
 		if (turn)
 		{
 
@@ -762,22 +1182,7 @@ void GameContainer::arena()
 			turnMarker->init(winX.getVal(1), winY.getVal(43), winX.getVal(8), 1);
 			c.putString("              ", winX.getVal(2), winY.getVal(43));
 		}
-		Player* shootingPlayer;
-		Player* defensePlayer;
-		if (turn)
-		{
-			shootingPlayer = player1;
-			defensePlayer = player2;
-		}
-		else
-		{
-			shootingPlayer = player2;
-			defensePlayer = player1;
-		}
-		if (turn)
-		{
-			volley++;
-		}
+	
 		
 		
 		bool out = false;
@@ -894,6 +1299,40 @@ void GameContainer::arena()
 		c.smartRender();
 		turn = !turn;
 	}
+
+	if (damageP1 - player1->getTank()->getHP() < damageP2 - player2->getTank()->getHP())
+	{
+		// win!
+		int winning = ((damageP2 - player2->getTank()->getHP()) * (damageP2 - player2->getTank()->getHP())) - ((damageP1 - player1->getTank()->getHP()) * (damageP1 - player1->getTank()->getHP()));
+		c.addShape(dialogBox);
+		string out = "You won the match. You receive $" + to_string(winning);
+		c.putString(out, winX.getVal(35), winY.getVal(35));
+		c.smartRender();
+		player1->earnMoney(winning);
+		sleep(2000);
+
+	}
+	else if(damageP1 - player1->getTank()->getHP() > damageP2 - player2->getTank()->getHP())
+	{
+		int winning = ((damageP2 - player2->getTank()->getHP()) * (damageP2 - player2->getTank()->getHP())) - ((damageP1 - player1->getTank()->getHP()) * (damageP1 - player1->getTank()->getHP()));
+		c.addShape(dialogBox);
+		string out = "Soory, you lost the match.";
+		c.putString(out, winX.getVal(35), winY.getVal(35));
+		c.smartRender();
+		player2->earnMoney(winning);
+		sleep(2000);
+	}
+	else
+	{
+		c.addShape(dialogBox);
+		string out = "It's a tie!";
+		c.putString(out, winX.getVal(35), winY.getVal(35));
+		c.smartRender();
+		sleep(2000);
+
+	}
+	
+
 
 	
 

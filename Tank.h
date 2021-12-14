@@ -29,5 +29,6 @@ public:
 	int getX();
 	int getY();
 	void repair();
+	void setMaxHP(int h);
 };
 #endif
