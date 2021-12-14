@@ -5,14 +5,30 @@ GameContainer::GameContainer()
 	// setup game globals
 	
 	endGame = !c.getSupport();
-	cout << "Please resize screen now to approporate size! Must be above 20x15";
+	cout << "Please resize screen now to approporate size! Must be above 40x21";
 	sleep(5000);
 
 	c.init();
-	endGame = endGame || (c.getHeight() < 15 || c.getWidth() < 20);
+	endGame = endGame || (c.getHeight() < 21 || c.getWidth() < 40);
 
 	winX.init(0, 100, 0, c.getWidth());
 	winY.init(50, 0, 0, c.getHeight());
+
+
+
+	// players
+	HumanPlayer* ben = new HumanPlayer("Ben");
+	CPUPlayer* joe = new CPUPlayer("Joe");
+
+	Weapon pebble = Weapon("pebble", 1, 1);
+	Stash st2 = Stash(pebble, 100);
+
+	ben->addWeaponStash(st2);
+
+	joe->addWeaponStash(st2);
+
+	player1 = ben;
+	player2 = joe;
 
 
 	// keys
@@ -198,6 +214,141 @@ void GameContainer::startMenu()
 
 	endGame = true;
 }
+void GameContainer::mainMenuScreen()
+{
+	c.fillScreen();
+	// Background!
+	c.addShape(&background);
+	// Menu Window. Will have a banner at the top and a selection box.	
+	c.addShape(&title);
+	// Bottom menu window
+	c.addShape(&mainMenu);
+
+	// text
+	c.putString("Welcome " + player1->getName() + "!", winX.getVal(27), 3);
+	c.putString("Tank Game By Benjamin Carter ", winX.getVal(28), 4);
+
+
+	string options[] = {
+		"Enter Match",
+		"Visit the shop",
+		"Save Game",
+		"Save and Exit",
+		"Exit without saving"
+	};
+
+	for (int x = 0; x < 5; x++)
+	{
+		string tx = to_string(x + 1) + " - " + options[x];
+		c.putString(tx, winX.getVal(27), 8 + x);
+	}
+	c.setTitle("Tank Game V1");
+	c.render();
+
+#ifndef LINUX
+
+	// get user input
+
+	int cursor = 8;
+	int oldCursor = 8;
+	bool newData = true;
+	int out = 0;
+	while (true)
+	{
+		keys.listen();
+		unsigned char 
+			charIn = keys.getKey();
+
+		if (newData)
+		{
+			Rectangle2D itemOld = Rectangle2D(winX.getVal(25), oldCursor, winX.getLength(50), 1);
+			Rectangle2D itemCurrent = Rectangle2D(winX.getVal(25), cursor, winX.getLength(50), 1);
+
+
+			itemCurrent.setFill(selection);
+			itemOld.setFill(mainMenuBackground);
+			c.addShape(&itemOld);
+			c.addShape(&itemCurrent);
+			c.putString(to_string(cursor - 8 + 1) + " - " + options[cursor - 8], winX.getVal(27), cursor);
+			c.putString(to_string(oldCursor - 8 + 1) + " - " + options[oldCursor - 8], winX.getVal(27), oldCursor);
+			c.smartRender();
+			newData = false;
+		}
+		if (charIn == VK_UP)
+		{
+			oldCursor = cursor;
+			cursor--;
+			newData = true;
+		}
+		else if (charIn == VK_DOWN)
+		{
+			oldCursor = cursor;
+			cursor++;
+			newData = true;
+		}
+		else if (charIn == VK_RETURN)
+		{
+			out = cursor - 8;
+			break;
+		}
+		if (cursor < 8)
+		{
+			cursor = 5 + 8 - 1;
+		}
+		else if (cursor >= (8 + 5))
+		{
+			cursor = 8;
+		}
+		sleep(25); // 40fps 
+
+	}
+	// returns out - the number that the user selected. 
+#endif
+
+	if (out == 0)
+	{
+		// start as new player
+		arena();
+	}
+	else if (out == 1)
+	{
+		c.clear();
+		c.addShape(&background);
+		
+		c.putString("The wonderful shop!", 0, 0);
+		c.render();
+		endGame = true;
+	}
+	else if (out == 2)
+	{
+		c.clear();
+		c.addShape(&background);
+
+		c.putString("Save game!", 0, 0);
+		c.render();
+		sleep(2000);
+		mainMenuScreen();
+	}
+	else if (out == 3)
+	{
+		c.addShape(&background);
+
+		c.putString("Save game!", 0, 0);
+		c.render();
+		sleep(2000);
+		mainMenuScreen();
+		endGame = true;
+	}
+	else if (out == 4)
+	{
+		c.clear();
+		c.addShape(&background);
+		c.render();
+		endGame = true;
+	}
+
+	endGame = true;
+}
 void GameContainer::newPlayerMenu()
 {
 
@@ -273,10 +424,11 @@ void GameContainer::newPlayerMenu()
 		}
 		sleep(25);
 	}
-	c.putString(playerName, 0, 0);
-	c.smartRender();
-	sleep(1000);
-	endGame = true;
+	
+	player1->init(playerName);
+	player2->init("CPU");
+	player2->setDifficulty(100);
+	mainMenuScreen();
 
 	// return player name as string playerName
 }
@@ -396,22 +548,135 @@ void GameContainer::sleep(unsigned int l)
 	using namespace std::this_thread;
 	sleep_for(milliseconds(l));
 }
+void GameContainer::printLabelArena()
+{
+	string player1Name = player1->getName();
+	string player2Name = player2->getName();
+
+	Tank* tankPlayer1 = player1->getTank();
+	Tank* tankPlayer2 = player2->getTank();
+	c.putString("Tank Arena!", winX.getVal(41), winY.getVal(48));
+	c.putString(player1Name + " vs. " + player2Name, winX.getVal(41), winY.getVal(47));
+	
+
+	c.putString(player1Name, winX.getVal(1), winY.getVal(48));
+
+	int health = tankPlayer1->getHP();
+	int maxHealth = tankPlayer1->getMaxHP();
+	int percent = (health * 100) / maxHealth;
+	c.putString("Health: " + to_string(health) + "/" + to_string(maxHealth) + "  (" + to_string(percent) + "%)  ", winX.getVal(1), winY.getVal(46));
+
+	int money = player1->getMoney();
+	c.putString("Dollars: $" + to_string(money), winX.getVal(1), winY.getVal(45));
+
+
+	c.putString(player2Name, winX.getVal(99) - player2Name.length(), winY.getVal(48));
+
+	health = tankPlayer2->getHP();
+	maxHealth = tankPlayer2->getMaxHP();
+	percent = (health * 100) / maxHealth;
+	string outString = "  Health: " + to_string(health) + "/" + to_string(maxHealth) + "  (" + to_string(percent) + "%)  ";
+	c.putString(outString, winX.getVal(99) - outString.length(), winY.getVal(46));
+}
 void GameContainer::arena()
 {
 
-	//cout << '\n' << winY.getVal(5) << '\n';
-	//cout << '\n' << winY.reverse(27) << '\n';
+	// player stuff
+	
 
+	
+	
+	/*
+	Tank t = Tank();
+	t.setX(0);
+	t.setY(5);
+
+
+	joe.saveOtherTank(&t);
+	joe.setTank(100, 15);
+
+	Shot mys = joe.aimShot();
+	cout << '\n';
+	cout << mys.getAngle() << '\n';
+	cout << mys.getPower() << '\n';
+
+	return;
+	*/
+
+
+
+	//joe.addWeaponStash(st);
+	//joe.addWeaponStash(st2);
+
+	//ben.displayAll();
 	//return;
+	string player1Name = player1->getName();
+	string player2Name = player2->getName();
 
+	Tank* tankPlayer1 = player1->getTank();
+	Tank* tankPlayer2 = player2->getTank();
+	int volley = 1;
+
+
+
+	// set up shapes
+
+	Rectangle2D* usernameStatusBoxL = new Rectangle2D(winX.getVal(1), winY.getVal(48), winX.getLength(15), winY.getLength(4));
+	Rectangle2D* usernameStatusBoxR = new Rectangle2D(winX.getVal(84), winY.getVal(48), winX.getLength(15), winY.getLength(4));
+	
+	Rectangle2D* titleBox = new Rectangle2D(winX.getVal(41), winY.getVal(48), winX.getLength(18), winY.getLength(2));
+	Rectangle2D* volleyTicker = new Rectangle2D(winX.getVal(44), winY.getVal(46), winX.getLength(12), 1);
+	Rectangle2D* turnMarker = new Rectangle2D(winX.getVal(1), winY.getVal(43), winX.getVal(8), 1);
+
+	Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
+	
+
+	// styles
+	
+	backgroundStyle.setTextColor(255, 255, 255);
+	background.setFill(backgroundStyle);
+
+	
+	Style usernameBox;
+	usernameBox.setBackgroundColor(0, 255, 255);
+
+	Style tickerStyle;
+	tickerStyle.setBackgroundColor(255, 127, 0);
+
+	Style dialogBoxIn;
+	Style dialogBoxOut;
+
+	dialogBoxIn.setBackgroundColor(127, 127, 127);
+	dialogBoxOut.setBackgroundColor(80, 80, 80);
+
+	usernameStatusBoxL->setFill(usernameBox);
+	usernameStatusBoxR->setFill(usernameBox);
+	titleBox->setFill(titleBackground);
+	volleyTicker->setFill(tickerStyle);
+	//turnMarker->setFill(tickerStyle);
+
+	dialogBox->setFill(dialogBoxIn);
+	dialogBox->setBorder(dialogBoxOut);
+	
+
+	// add shapes
 	c.clear();
 	c.addShape(&background);
-	
-	c.putString(to_string(c.getHeight()), 0, 0);
-	c.putString(to_string(c.getWidth()), 0, 1);
-	c.putString(to_string(winY.getLength(5)), 0, 2);
+	c.addShape(usernameStatusBoxL);
+	c.addShape(usernameStatusBoxR);
+	c.addShape(titleBox);
+	c.addShape(volleyTicker);
+	//c.addShape(&turnMarker);
+	c.addShape(dialogBox);
 
-	Ground groundHandler = Ground(c.getWidth(),c.getHeight());
+	// put in text
+
+	printLabelArena();
+	c.putString("Volley: " + to_string(volley) + " of 10", winX.getVal(45), winY.getVal(46));
+
+
+	// ground
+	Ground groundHandler = Ground(c.getWidth(), c.getHeight());
 
 	groundHandler.groundRandomizer();
 
@@ -427,76 +692,215 @@ void GameContainer::arena()
 		for (int x = 0; x < c.getWidth(); x++)
 		{
 			//cout << winX.getVal(x) << " " << winY.getVal(y) << '\n';
-			if (groundHandler.isGround(x,y))
+			if (groundHandler.isGround(x, y))
 			{
-				groundStyle.setBackgroundColor(0, Console::mapValue(y, c.getHeight(),0, 50, 190), 0);
-				groundPoint.init(x,y);
+				groundStyle.setBackgroundColor(0, Console::mapValue(y, c.getHeight(), 0, 50, 190), 0);
+				groundPoint.init(x, y);
 				groundPoint.setFill(groundStyle);
 				c.addShape(&groundPoint);
 				totalHeights[x] += 1;
 			}
 		}
 	}
-	 c.render();
-	//cout << "HERE!\n";
 
-	
+
+
+	// tanks
 	
 	Rectangle2D tank1 = Rectangle2D(winX.getVal(3), c.getHeight() - totalHeights[winX.getVal(4)] - winY.getLength(2), winX.getLength(4), winY.getLength(2));
 	Style tankStyle;
 	tankStyle.setBackgroundColor(255, 255, 0);
 	tank1.setFill(tankStyle);
 	c.addShape(&tank1);
+
+	player1->setTank(3, winY.reverse(c.getHeight() - totalHeights[winX.getVal(4)] - winY.getLength(2)));
+
+
 	Rectangle2D tank2 = Rectangle2D(winX.getVal(93), c.getHeight() - totalHeights[winX.getVal(93)] - winY.getLength(2), winX.getLength(4), winY.getLength(2));
-	
+
 	tank2.setFill(tankStyle);
 	c.addShape(&tank2);
-	
-	c.smartRender();
+
+	player2->setTank(93, winY.reverse(c.getHeight() - totalHeights[winX.getVal(93)] - winY.getLength(2)));
+
+
+	///c.putString(to_string(c.getWidth()) + " " + to_string(c.getHeight()), 0, 0);
+
+	c.render(); // render is faster when the whole screen is to be written.
 
 	
-	Shot myShot = Shot();
-	myShot.setAngle(45);
-	myShot.setPower(33);
-	myShot.setStartX(winX.reverse(tank1.getAnchorX()) + 2);
-	myShot.setStartY(winY.reverse(tank1.getAnchorY()));
-
-	myShot.calculatePoints();
-
-	vector<PStruct> pts = myShot.getPoints();
-
-	
-	
-	Style weaponStyle;
-	weaponStyle.setBackgroundColor(255, 0, 0);
-	Point2D actualPoint;
-
-	for (int pointNumber = 0; pointNumber < pts.size(); pointNumber++)
+	bool turn = true; // true if player 1
+	while (volley < 11)
 	{
-		// cout << (int)pts[pointNumber].x << " " << (int)pts[pointNumber].y << '\n';
-		if (pts[pointNumber].x >= 0 && pts[pointNumber].x < winX.getInMax() && pts[pointNumber].y > 0 && pts[pointNumber].y < winY.getInMin())
+		if (turn)
 		{
+
+			turnMarker->init(winX.getVal(1), winY.getVal(43), winX.getVal(8), 1);
+			turnMarker->setFill(tickerStyle);
+			c.addShape(turnMarker);
+			c.putString("Player1's turn", winX.getVal(2), winY.getVal(43));
+
+			Rectangle2D turnMarker2 = Rectangle2D(winX.getVal(91), winY.getVal(43), winX.getVal(8), 1);
+			turnMarker2.setFill(backgroundStyle);
+			c.addShape(&turnMarker2);
+
+			c.putString("              ", winX.getVal(92), winY.getVal(43));
 			
-			actualPoint.init((int)winX.getDoubleVal(pts[pointNumber].x),(int)winY.getDoubleVal(pts[pointNumber].y));
-			actualPoint.setFill(weaponStyle);
-			if (!groundHandler.isGround(actualPoint.getAnchorX(), actualPoint.getAnchorY()))
-			{
-				c.addShape(&actualPoint);
-				
-			}
 		}
 		else
 		{
-		//	cout << "BAD: " << winX.getVal(pts[pointNumber]->getAnchorX()) << " " << winY.getVal(pts[pointNumber]->getAnchorY()) << '\n';
+			turnMarker->init(winX.getVal(91), winY.getVal(43), winX.getVal(8), 1);
+			turnMarker->setFill(tickerStyle);
+			c.addShape(turnMarker);
+
+			Rectangle2D turnMarker2 = Rectangle2D(winX.getVal(1), winY.getVal(43), winX.getVal(8), 1);
+			turnMarker2.setFill(backgroundStyle);
+			c.addShape(&turnMarker2);
+
+			turnMarker->init(winX.getVal(91), winY.getVal(43), winX.getVal(8), 1);
+			c.putString("Player2's turn", winX.getVal(92), winY.getVal(43));
+			turnMarker->init(winX.getVal(1), winY.getVal(43), winX.getVal(8), 1);
+			c.putString("              ", winX.getVal(2), winY.getVal(43));
+		}
+		Player* shootingPlayer;
+		Player* defensePlayer;
+		if (turn)
+		{
+			shootingPlayer = player1;
+			defensePlayer = player2;
+		}
+		else
+		{
+			shootingPlayer = player2;
+			defensePlayer = player1;
+		}
+		if (turn)
+		{
+			volley++;
 		}
 		
-	}
-	c.smartRender();
-	getchar();
+		
+		bool out = false;
+		if (shootingPlayer->isCPUPlayer()) // is shooting player CPU
+		{
+			shootingPlayer->saveOtherTank(defensePlayer->getTank());
+		}
+		else
+		{
+			c.addShape(dialogBox);
+		}
+		out = shootingPlayer->aimMenu(c, winX, winY);
+		c.smartRender();
+		if (out) // if they can shoot a valid shot
+		{
+			Shot myShot = shootingPlayer->aimShot();
+			myShot.calculatePoints();
+			Rectangle2D dialogBoxBlackout = Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
+			dialogBoxBlackout.setFill(backgroundStyle);
+			c.addShape(&dialogBoxBlackout);
 
+
+			vector<PStruct> pts = myShot.getPoints();
+			// draw the shot
+			Style weaponStyle;
+			weaponStyle.setBackgroundColor(255, 0, 0);
+			Point2D actualPoint;
+
+			Style oldStyle;
+			int oldX = 0;
+			int oldY = 0;
+			unsigned char oldChar = ' ';
+			for (int pointNumber = 0; pointNumber < pts.size(); pointNumber++)
+			{
+				// cout << (int)pts[pointNumber].x << " " << (int)pts[pointNumber].y << '\n';
+				if (pts[pointNumber].x >= 0 && pts[pointNumber].x < winX.getInMax() && pts[pointNumber].y > 0 && pts[pointNumber].y < winY.getInMin())
+				{
+					actualPoint.init((int)winX.getDoubleVal(pts[pointNumber].x), (int)winY.getDoubleVal(pts[pointNumber].y));
+
+					actualPoint.setFill(weaponStyle);
+					if (!groundHandler.isGround(actualPoint.getAnchorX(), actualPoint.getAnchorY()))
+					{
+						if (oldX != 0 || oldY != 0)
+						{
+							Point2D oldP = Point2D(oldX, oldY);
+
+							oldP.setFill(oldStyle);
+							oldP.putChar(oldChar);
+							c.addShape(&oldP);
+						}
+						oldX = actualPoint.getAnchorX();
+						oldY = actualPoint.getAnchorY();
+						oldStyle.init(c.getSpecificStyle(oldX, oldY));
+						oldChar = c.getSpecificChar(oldX, oldY);
+
+
+						c.addShape(&actualPoint);
+					}
+					else
+					{
+						break;
+						//oldX = 0;
+						//oldY = 0;
+					}
+					Tank* opponentTank = defensePlayer->getTank();
+
+					if (pts[pointNumber].x >= opponentTank->getX() && pts[pointNumber].x <= opponentTank->getX() + 4 && pts[pointNumber].y >= opponentTank->getY() && pts[pointNumber].y <= opponentTank->getY() + 2)
+					{
+						// collision!!!!
+
+						opponentTank->takeDamage(myShot.getWeapon().getDamage());
+						shootingPlayer->earnMoney(myShot.getWeapon().getDamage());
+						
+						break;
+					}
+						
+					c.smartRender();
+					sleep(1);
+				}
+				else if (pts[pointNumber].y >= winY.getInMin())
+				{
+					 // pass
+				}
+				else
+				{
+					break;
+					//	cout << "BAD: " << winX.getVal(pts[pointNumber]->getAnchorX()) << " " << winY.getVal(pts[pointNumber]->getAnchorY()) << '\n';
+				}
+				
+				
+			}
+
+			Point2D oldP = Point2D(oldX, oldY);
+
+			oldP.setFill(oldStyle);
+			oldP.putChar(oldChar);
+			c.addShape(&oldP);
+		}
+		
+		else
+		{
+			if (!shootingPlayer->isCPUPlayer())
+			{
+				c.addShape(dialogBox);
+				string out = "You have no weapons remaining!";
+				c.putString(out, winX.getVal(35), winY.getVal(35));
+				c.smartRender();
+				sleep(2000);
+			}
+		}
+
+		printLabelArena();
+		c.putString("Volley: " + to_string(volley) + " of 10", winX.getVal(45), winY.getVal(46));
+		c.smartRender();
+		turn = !turn;
+	}
 
 	
 
+
+
+	
+	
 
 
 

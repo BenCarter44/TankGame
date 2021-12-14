@@ -54,14 +54,14 @@ using namespace std::chrono;
 
 int main()
 {
-
+	
 	GameContainer game = GameContainer();
 	if (game.isGameEnd())
 	{
 		return 0;
 	}
-	//game.startMenu();
-	game.arena();
+	game.startMenu();
+	//game.arena();
 
 	/*
 
