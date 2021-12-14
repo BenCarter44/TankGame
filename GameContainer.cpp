@@ -249,7 +249,7 @@ void GameContainer::mainMenuScreen()
 #ifndef LINUX
 
 	// get user input
-
+	sleep(100);
 	int cursor = 8;
 	int oldCursor = 8;
 	bool newData = true;
@@ -320,20 +320,54 @@ void GameContainer::mainMenuScreen()
 		c.clear();
 		c.addShape(&background);
 
-		c.putString("Save game!", 0, 0);
-		c.render();
-		sleep(2000);
-		mainMenuScreen();
+		FileSaver fs("tankTest.txt");
+		fs.loadFile();
+		if (fs.isBad())
+		{
+			c.putString("Failed to save game!", 0, 0);
+			c.render();
+			sleep(2000);
+			mainMenuScreen();
+		}
+		else
+		{
+			fs.storePlayer(player1, player2);
+			fs.saveFile();
+			c.putString("Saved game!", 0, 0);
+			c.render();
+			sleep(2000);
+			mainMenuScreen();
+		}
+
+		
 	}
 	else if (out == 3)
 	{
+		c.clear();
 		c.addShape(&background);
 
-		c.putString("Save game!", 0, 0);
-		c.render();
-		sleep(2000);
-		mainMenuScreen();
-		endGame = true;
+		FileSaver fs("tankTest.txt");
+		fs.loadFile();
+		if (fs.isBad())
+		{
+			c.putString("Failed to save game!", 0, 0);
+			c.render();
+			sleep(2000);
+			mainMenuScreen();
+		}
+		else
+		{
+			fs.storePlayer(player1, player2);
+			fs.saveFile();
+			c.putString("Saved game!", 0, 0);
+			c.render();
+			sleep(2000);
+			c.clear();
+			c.addShape(&background);
+			c.render();
+			endGame = true;
+		}
+		
 	}
 	else if (out == 4)
 	{
@@ -848,21 +882,34 @@ void GameContainer::loadPlayerMenu()
 	c.putString("By Benjamin Carter ", winX.getVal(28), 4);
 
 	c.putString("Pick a player to load:", winX.getVal(27), 8);
+	
+	
+	FileSaver fs("tankTest.txt");
+	
+	fs.loadFile();
+	if (fs.isBad())
+	{
+		c.putString("Bad File!", 0, 0);
+		c.smartRender();
+		sleep(2000);
+		endGame = true;
+		return;
+	}
+	vector<string> options = fs.getPlayerNames();
 
-	string options[] = {
-		"Player 1",
-		"Player 2",
-		"Player 3",
-		"Player 4"
-	};
 
-	int optionSize = 4;
+
+
+	int optionSize = options.size();
+
 
 	for (int x = 0; x < optionSize; x++)
 	{
+		//cout << options[x] << endl;
 		string tx = to_string(x + 1) + " - " + options[x];
 		c.putString(tx, winX.getVal(27), 9 + x);
 	}
+	//return;
 	c.smartRender();
 
 #ifndef LINUX
@@ -924,10 +971,12 @@ void GameContainer::loadPlayerMenu()
 	// returns out - the number that the user selected. 
 #endif
 
-	c.putString(options[out], 0, 0);
-	c.smartRender();
-	sleep(1000);
-	endGame = true;
+
+	player1 = fs.getPlayer(options[out]);
+	player2 = fs.getOtherPlayer(options[out]);
+
+	mainMenuScreen();
+	
 }
 void GameContainer::onlinePlayerMenu()
 {

@@ -55,9 +55,9 @@ using namespace std::chrono;
 
 int main()
 {
-
-	FileSaver fs("tankTest.txt");
 	/*
+	FileSaver fs("tankTest.txt");
+	
 	Player* ben = new HumanPlayer("Ben");
 	Player* joe = new CPUPlayer("Joe");
 
@@ -71,17 +71,13 @@ int main()
 	fs.storePlayer(ben, joe);
 	ben->setName("Bob");
 	fs.saveFile();
-	*/
+	
 	fs.loadFile();
-	Player* ben;
-	Player* joe;
-	ben = fs.getPlayer("Bob");
-	joe = fs.getOtherPlayer("Bob");
-
-	cout << ben->getMoney();
 
 
-	/*
+
+	*/
+	
 	GameContainer game = GameContainer();
 	if (game.isGameEnd())
 	{

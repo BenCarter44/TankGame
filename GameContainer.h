@@ -17,6 +17,7 @@
 #include "CPUPlayer.h"
 #include "PStruct.h"
 #include "Ground.h"
+#include "FileSaver.h"
 
 using namespace std;
 

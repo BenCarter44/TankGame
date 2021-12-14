@@ -28,6 +28,7 @@ public:
 	vector<string> getPlayerNames();
 	void loadFile();
 	void saveFile();
+	int getPlayerExists(string name);
 	bool isBad()
 	{
 		return badFile;

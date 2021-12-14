@@ -12,11 +12,32 @@ FileSaver::FileSaver(string fname)
 
 void FileSaver::storePlayer(Player* p, Player* p2)
 {
-	players.push_back(p);
-	otherPlayers.push_back(p2);
+	if (getPlayerExists(p->getName()) != -1)
+	{
+		players[getPlayerExists(p->getName())] = p;
+		otherPlayers[getPlayerExists(p->getName())] = p2;
+	}
+	else
+	{
+		players.push_back(p);
+		otherPlayers.push_back(p2);
+	}
+	
 	// playerName,money,isCPU,tankHP,tankMAX,STASH,playerCPU,CPUMoney,CPU,tankHP,tankMAX,STASH\n
 
 	//STASH: weaponName:damage:amount:weaponName:damage:amount
+}
+int FileSaver::getPlayerExists(string name)
+{
+	int out = -1;
+	for (int x = 0; x < players.size(); x++)
+	{
+		if (players[x]->getName() == name)
+		{
+			out = x;
+		}
+	}
+	return out;
 }
 Player* FileSaver::getPlayer(string name)
 {
@@ -42,32 +63,19 @@ Player* FileSaver::getOtherPlayer(string name)
 }
 vector<string> FileSaver::getPlayerNames()
 {
-	vector<string> strOut;
-	inout.open(fname, ios::in);
-	while (!inout.eof() && !inout.bad() && !inout.fail())
+	vector<string> out;
+	for (int x = 0; x < players.size(); x++)
 	{
-		string dump = "";
-		getline(inout, dump, '\n');
-		string dump2 = "";
-		if (inout.eof())
-		{
-			break;
-		}
-		for (int x = 0; x < dump.length(); x++)
-		{
-			if (dump.at(x) == ',')
-			{
-				break;
-			}
-			dump2 += dump.at(0);
-		}
-		strOut.push_back(dump2);
+		out.push_back(players[x]->getName());
+		
 	}
-	return strOut;
+	return out;
 }
 void FileSaver::saveFile()
 {
-	inout.open(fname, ios::out);
+//	cout << "SAVING!" << endl;
+	ofstream  fileIt;
+	fileIt.open(fname);
 	for (int p = 0; p < players.size(); p++)
 	{
 		string out = players[p]->getName();
@@ -121,13 +129,14 @@ void FileSaver::saveFile()
 		stash = stash.substr(0, stash.length() - 1);
 		out += stash;
 		out += '\n';
-		inout << out;
+		fileIt << out;
 	}
-	inout.close();
+	fileIt.close();
 
 }
 void FileSaver::loadFile()
 {
+//	cout << "loading!\n";
 	players.clear();
 	otherPlayers.clear();
 	badFile = false;
@@ -136,11 +145,13 @@ void FileSaver::loadFile()
 	{
 		string dump = "";
 		getline(inout, dump, '\n');
+		
 		string dump2 = "";
 		if (inout.eof())
 		{
 			break;
 		}
+		//cout << dump << '\n';
 		vector<string> tokens;
 		dump2 = "";
 		for (int x = 0; x < dump.length(); x++)
@@ -165,6 +176,7 @@ void FileSaver::loadFile()
 			Player* p2;
 			string stashP1 = tokens[5];
 			string stashP2 = tokens[11];
+			//cout << stashP1 << endl;
 			if (tokens[2] == "0")
 			{
 				p1 = new HumanPlayer(tokens[0]);
@@ -211,6 +223,7 @@ void FileSaver::loadFile()
 					dump3 += stashP1.at(y);
 				}
 			}
+			subTokens.push_back(dump3);
 			if (subTokens.size() % 3 == 0)
 			{
 				for (int x = 0; x < subTokens.size() / 3; x++)
@@ -220,10 +233,11 @@ void FileSaver::loadFile()
 						Weapon w = Weapon(subTokens[3 * x], stoi(subTokens[3 * x + 1]));
 						Stash st = Stash(w, stoi(subTokens[3 * x + 2]));
 						p1->addWeaponStash(st);
+					//	cout << w.getName();
 					}
 					catch (...)
 					{
-			//			cout << "Here2!";
+						cout << "Here2!";
 						badFile = true;
 						inout.close();
 						return;
@@ -259,7 +273,7 @@ void FileSaver::loadFile()
 					catch (...)
 					{
 
-			//			cout << "Here6!";
+						cout << "Here6!";
 						badFile = true;
 						inout.close();
 						return;
@@ -270,14 +284,14 @@ void FileSaver::loadFile()
 			}
 			else
 			{
-		//		cout << "Here7!";
+				cout << "Here7!";
 				badFile = true;
 				return;
 			}
 		}
 		else
 		{
-		//	cout << "Here92!";
+			cout << "Here92!";
 			badFile = true;
 			return;
 		}
