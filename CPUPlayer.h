@@ -6,6 +6,7 @@
 #include <math.h>
 #include <random>
 
+
 class CPUPlayer : public Player
 {
 private:

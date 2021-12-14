@@ -59,7 +59,7 @@ int main()
 	/*
 	FileSaver fs("tankTest.txt");
 	
-	Player* ben = new HumanPlayer("Ben");
+	Player* ben = new CPUPlayer("Ben");
 	Player* joe = new CPUPlayer("Joe");
 
 	Weapon pebble = Weapon("Pebbles", 1, 1);
@@ -68,16 +68,17 @@ int main()
 	ben->addWeaponStash(st2);
 
 	joe->addWeaponStash(st2);
-	joe->setDifficulty(50);
+	joe->setDifficulty(90);
+	ben->setDifficulty(1);
 	fs.storePlayer(ben, joe);
-	ben->setName("Bob");
+	ben->setName("Jake");
 	fs.saveFile();
 	
 	fs.loadFile();
 	cout << fs.isBad();
+	
+	
 	*/
-
-
 	
 	
 	GameContainer game = GameContainer();

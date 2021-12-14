@@ -74,18 +74,18 @@ GameContainer::GameContainer()
 	keys2.addKey(VK_CAPITAL);
 #endif
 	// styles
-	backgroundStyle.setBackgroundColor(20, 20, 20);
+	backgroundStyle.setBackgroundColor(35, 96, 0);
 	backgroundStyle.setTextColor(20, 255, 20);
 
-	titleBackground.setBackgroundColor(0, 0, 255);
-	titleBackground.setTextColor(255, 255, 255);
+	titleBackground.setBackgroundColor(168, 84, 0);
+	titleBackground.setTextColor(255, 255, 0);
 
-	mainMenuBackground.setBackgroundColor(255, 0, 255);
-	mainMenuBackground.setTextColor(255, 255, 255);
+	mainMenuBackground.setBackgroundColor(175, 171, 171);
+	mainMenuBackground.setTextColor(0, 0, 0);
 	mainMenuBackground.turnOffBlink();
 
-	selection.setBackgroundColor(50, 50, 50);
-	selection.setTextColor(255, 0, 0);
+	selection.setBackgroundColor(150, 150, 255);
+	selection.setTextColor(255, 255, 0);
 
 	textBoxBackground.setBackgroundColor(150, 150, 150);
 	textBoxBackground.setTextColor(255, 255, 255);
@@ -769,7 +769,10 @@ void GameContainer::shop()
 			}
 			else if (inc == VK_DOWN)
 			{
-				quantity--;
+				if (quantity > 0)
+				{
+					quantity--;
+				}
 				c.putString("Quantity to order: " + to_string(quantity) + "  ", winX.getVal(35), winY.getVal(34));
 				c.putString("Total Cost: " + to_string(quantity * costs[selection]) + "  ", winX.getVal(35), winY.getVal(33));
 				c.smartRender();
@@ -1322,7 +1325,10 @@ void GameContainer::arena()
 
 						opponentTank->takeDamage(myShot.getWeapon().getDamage());
 						shootingPlayer->earnMoney(myShot.getWeapon().getDamage());
-						
+						if (opponentTank->getHP() <= 0)
+						{
+							volley = 100;
+						}
 						break;
 					}
 						
@@ -1370,7 +1376,8 @@ void GameContainer::arena()
 	if (damageP1 - player1->getTank()->getHP() < damageP2 - player2->getTank()->getHP())
 	{
 		// win!
-		int winning = ((damageP2 - player2->getTank()->getHP()) * (damageP2 - player2->getTank()->getHP())) - ((damageP1 - player1->getTank()->getHP()) * (damageP1 - player1->getTank()->getHP()));
+		//int winning = ((damageP2 - player2->getTank()->getHP()) * (damageP2 - player2->getTank()->getHP())) - ((damageP1 - player1->getTank()->getHP()) * (damageP1 - player1->getTank()->getHP()));
+		int winning = ((damageP2 - player2->getTank()->getHP())) - (damageP1 - player1->getTank()->getHP());
 		c.addShape(dialogBox);
 		string out = "Game over!";
 		c.putString(out, winX.getVal(35), winY.getVal(35));
@@ -1383,7 +1390,7 @@ void GameContainer::arena()
 	}
 	else if(damageP1 - player1->getTank()->getHP() > damageP2 - player2->getTank()->getHP())
 	{
-		int winning = ((damageP2 - player2->getTank()->getHP()) * (damageP2 - player2->getTank()->getHP())) - ((damageP1 - player1->getTank()->getHP()) * (damageP1 - player1->getTank()->getHP()));
+		int winning = ((damageP2 - player2->getTank()->getHP())) - (damageP1 - player1->getTank()->getHP());
 		c.addShape(dialogBox);
 		string out = "Game over!";
 		c.putString(out, winX.getVal(35), winY.getVal(35));
@@ -1411,7 +1418,7 @@ void GameContainer::arena()
 
 
 
-	
+	mainMenuScreen();
 	
 
 

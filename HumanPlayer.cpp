@@ -166,6 +166,10 @@ bool HumanPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)
 		{
 			angle = 360;
 		}
+		if (angle > 360)
+		{
+			angle = 0;
+		}
 		if (power > 100)
 		{
 			power = 100;
