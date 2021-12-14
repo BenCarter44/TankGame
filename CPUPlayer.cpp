@@ -28,10 +28,37 @@ bool CPUPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)
 {
 	int xe = otherTank->getX() - tank.getX() + 1;
 	int ye = otherTank->getY() - tank.getY();
+	srand(time(0));
+
+	int offsetN = (rand() % difficulty) * ((rand() % 2) * -1); // adjusts the power, -100 t0 100
+
+	xe = xe + offsetN / 2;
+	
+	offsetN = (rand() % difficulty) * ((rand() % 2) * -1);
+	ye = ye + offsetN / 10;
+
+
+
 	double gravity = 9.8;
 	int maxTheta = 0;
 	double maxPower = 0;
-	for (int theta = 0; theta < 180; theta++)
+	for (int theta = 0; theta < 90; theta++)
+	{
+
+		double top = (-1.0 * gravity * xe * xe);
+		double bottom = (ye - tan(theta * M_PI / 180.0) * xe) * (cos(theta * M_PI / 180.0) * cos(theta * M_PI / 180.0)) * 2.0;
+		double power = top / bottom;
+		if (power > 0)
+		{
+			power = sqrt(power);
+			if (power <= 33.0)
+			{
+				maxPower = power;
+				maxTheta = theta;
+			}
+		}
+	}
+	for (int theta = 180; theta > 90; theta--)
 	{
 
 		double top = (-1.0 * gravity * xe * xe);
@@ -69,15 +96,15 @@ bool CPUPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)
 
 	// randomization
 	srand(time(0));
-	int offsetN = (rand() % difficulty) * ((rand() % 2) * -1); // adjusts the power
+	/*int offsetN = (rand() % difficulty) * ((rand() % 2) * -1); // adjusts the power
 	
 	double of = offsetN / 3.0;
 	maxPower = maxPower + of;
-	int offsetA = rand() % difficulty * ((rand() % 2) * -1);
+	int offsetA = (rand() % difficulty) * ((rand() % 2) * -1);
 
 	double af = offsetA * .15;
 	maxTheta = maxTheta + af;
-	
+	*/
 
 	shotHold.init();
 	shotHold.setStartX(tank.getX());

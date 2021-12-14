@@ -25,6 +25,7 @@ private:
 protected:
 	bool isCPU = true;
 	Tank tank;
+	
 
 public:
 	Player();
@@ -71,6 +72,6 @@ public:
 	virtual void saveOtherTank(Tank* t) = 0;
 	virtual void setDifficulty(int df) = 0;
 	virtual int getDifficulty() = 0;
-
+	virtual bool isQuit() = 0;
 };
 #endif

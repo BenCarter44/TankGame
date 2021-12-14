@@ -31,6 +31,10 @@ public:
 	{
 		return difficulty;
 	}
+	bool isQuit()
+	{
+		return false;
+	}
 };
 
 

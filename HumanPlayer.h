@@ -16,6 +16,7 @@ private:
 	int oldPower;
 	int oldAngle;
 	Stash* oldWeapon;
+	bool isQuitB = false;
 public:
 	HumanPlayer();
 	void init();
@@ -35,6 +36,10 @@ public:
 	int getDifficulty()
 	{
 		return 0;
+	}
+	bool isQuit()
+	{
+		return isQuitB;
 	}
 };
 

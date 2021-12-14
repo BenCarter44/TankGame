@@ -26,7 +26,7 @@ GameContainer::GameContainer()
 	ben->addWeaponStash(st2);
 
 	joe->addWeaponStash(st2);
-
+	joe->setDifficulty(100);
 	player1 = ben;
 	player2 = joe;
 
@@ -1033,6 +1033,14 @@ void GameContainer::arena()
 
 	// player stuff
 	
+	// make the tank a little harder
+
+	if (player2->getDifficulty() > 5)
+	{
+		player2->setDifficulty(player2->getDifficulty() - 1);
+	}
+
+	
 
 	
 	
@@ -1124,6 +1132,8 @@ void GameContainer::arena()
 	printLabelArena();
 	c.putString("Volley: " + to_string(volley) + " of 10", winX.getVal(45), winY.getVal(46));
 
+
+	//c.putString(to_string(player2->getDifficulty()), 0, 0);
 
 	// ground
 	Ground groundHandler = Ground(c.getWidth(), c.getHeight());
@@ -1244,10 +1254,18 @@ void GameContainer::arena()
 			c.addShape(dialogBox);
 		}
 		out = shootingPlayer->aimMenu(c, winX, winY);
+		bool isQuit = shootingPlayer->isQuit();
+		if (isQuit)
+		{
+			break;
+		}
+		
 		c.smartRender();
 		if (out) // if they can shoot a valid shot
 		{
 			Shot myShot = shootingPlayer->aimShot();
+		//	c.putString(to_string((int)myShot.getAngle()) + "  ", 10, 0);
+		//	c.putString(to_string((int)(myShot.getPower()*10) / 10.0) + "  ", 15, 0);
 			myShot.calculatePoints();
 			Rectangle2D dialogBoxBlackout = Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
 			dialogBoxBlackout.setFill(backgroundStyle);
@@ -1354,8 +1372,10 @@ void GameContainer::arena()
 		// win!
 		int winning = ((damageP2 - player2->getTank()->getHP()) * (damageP2 - player2->getTank()->getHP())) - ((damageP1 - player1->getTank()->getHP()) * (damageP1 - player1->getTank()->getHP()));
 		c.addShape(dialogBox);
-		string out = "You won the match. You receive $" + to_string(winning);
+		string out = "Game over!";
 		c.putString(out, winX.getVal(35), winY.getVal(35));
+		out = "You won the match. You receive $" + to_string(winning);
+		c.putString(out, winX.getVal(35), winY.getVal(34));
 		c.smartRender();
 		player1->earnMoney(winning);
 		sleep(2000);
@@ -1365,8 +1385,10 @@ void GameContainer::arena()
 	{
 		int winning = ((damageP2 - player2->getTank()->getHP()) * (damageP2 - player2->getTank()->getHP())) - ((damageP1 - player1->getTank()->getHP()) * (damageP1 - player1->getTank()->getHP()));
 		c.addShape(dialogBox);
-		string out = "Soory, you lost the match.";
+		string out = "Game over!";
 		c.putString(out, winX.getVal(35), winY.getVal(35));
+		out = "Soory, you lost the match.";
+		c.putString(out, winX.getVal(35), winY.getVal(34));
 		c.smartRender();
 		player2->earnMoney(winning);
 		sleep(2000);
@@ -1374,8 +1396,10 @@ void GameContainer::arena()
 	else
 	{
 		c.addShape(dialogBox);
-		string out = "It's a tie!";
+		string out = "Game over!";
 		c.putString(out, winX.getVal(35), winY.getVal(35));
+		out = "It's a tie!";
+		c.putString(out, winX.getVal(35), winY.getVal(34));
 		c.smartRender();
 		sleep(2000);
 

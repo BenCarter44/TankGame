@@ -23,7 +23,7 @@ void FileSaver::storePlayer(Player* p, Player* p2)
 		otherPlayers.push_back(p2);
 	}
 	
-	// playerName,money,isCPU,tankHP,tankMAX,STASH,playerCPU,CPUMoney,CPU,tankHP,tankMAX,STASH\n
+	// playerName,money,isCPU,tankHP,tankMAX,diff,STASH,playerCPU,CPUMoney,CPU,tankHP,tankMAX,diff,STASH\n
 
 	//STASH: weaponName:damage:amount:weaponName:damage:amount
 }
@@ -76,7 +76,7 @@ void FileSaver::saveFile()
 //	cout << "SAVING!" << endl;
 	ofstream  fileIt;
 	fileIt.open(fname);
-	for (int p = 0; p < players.size(); p++)
+	for (int p = 0; p < players.size(); p++)  // playerName,money,isCPU,tankHP,tankMAX,diff,STASH,playerCPU,CPUMoney,CPU,tankHP,tankMAX,diff,STASH\n
 	{
 		string out = players[p]->getName();
 		out += ',';
@@ -87,6 +87,8 @@ void FileSaver::saveFile()
 		out += to_string(players[p]->getTank()->getHP());
 		out += ',';
 		out += to_string(players[p]->getTank()->getMaxHP());
+		out += ',';
+		out += to_string(players[p]->getDifficulty());
 		out += ',';
 
 		string stash = "";
@@ -112,6 +114,8 @@ void FileSaver::saveFile()
 		out += to_string(otherPlayers[p]->getTank()->getHP());
 		out += ',';
 		out += to_string(otherPlayers[p]->getTank()->getMaxHP());
+		out += ',';
+		out += to_string(otherPlayers[p]->getDifficulty());
 		out += ',';
 
 		stash = "";
@@ -168,14 +172,14 @@ void FileSaver::loadFile()
 			}
 		}
 		 // 5 and 11
-		//cout << dump2 << endl;
-		tokens.push_back(dump2);
-		if (tokens.size() == 12)
+		//cout << dump2 << endl;        0        1    2     3       4      5   6      7          8       9   10      11      12  13
+		tokens.push_back(dump2); // playerName,money,isCPU,tankHP,tankMAX,diff,STASH,playerCPU,CPUMoney,CPU,tankHP,tankMAX,diff,STASH\n
+		if (tokens.size() == 14)
 		{
 			Player* p1;
 			Player* p2;
-			string stashP1 = tokens[5];
-			string stashP2 = tokens[11];
+			string stashP1 = tokens[6];
+			string stashP2 = tokens[13];
 			//cout << stashP1 << endl;
 			if (tokens[2] == "0")
 			{
@@ -185,7 +189,7 @@ void FileSaver::loadFile()
 			{
 				p1 = new CPUPlayer(tokens[0]);
 			}
-			if (tokens[8] == "0")
+			if (tokens[9] == "0")
 			{
 				p2 = new HumanPlayer(tokens[0]);
 			}
@@ -196,11 +200,13 @@ void FileSaver::loadFile()
 			try
 			{
 				p1->setMoney(stoi(tokens[1]));
-				p2->setMoney(stoi(tokens[7]));
+				p2->setMoney(stoi(tokens[8]));
+				p1->setDifficulty(stoi(tokens[5]));
+				p2->setDifficulty(stoi(tokens[12]));
 				p1->getTank()->setHP(stoi(tokens[3]));
-				p2->getTank()->setHP(stoi(tokens[9]));
-				p1->getTank()->setMaxHP(stoi(tokens[3]));
-				p2->getTank()->setMaxHP(stoi(tokens[9]));
+				p2->getTank()->setHP(stoi(tokens[10]));
+				p1->getTank()->setMaxHP(stoi(tokens[4]));
+				p2->getTank()->setMaxHP(stoi(tokens[11]));
 			}
 			catch(...)
 			{
@@ -237,7 +243,7 @@ void FileSaver::loadFile()
 					}
 					catch (...)
 					{
-						cout << "Here2!";
+		//				cout << "Here2!";
 						badFile = true;
 						inout.close();
 						return;
@@ -273,7 +279,7 @@ void FileSaver::loadFile()
 					catch (...)
 					{
 
-						cout << "Here6!";
+	///					cout << "Here6!";
 						badFile = true;
 						inout.close();
 						return;
@@ -284,14 +290,14 @@ void FileSaver::loadFile()
 			}
 			else
 			{
-				cout << "Here7!";
+//				cout << "Here7!";
 				badFile = true;
 				return;
 			}
 		}
 		else
 		{
-			cout << "Here92!";
+	//		cout << "Here92!";
 			badFile = true;
 			return;
 		}

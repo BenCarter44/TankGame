@@ -55,6 +55,7 @@ using namespace std::chrono;
 
 int main()
 {
+	
 	/*
 	FileSaver fs("tankTest.txt");
 	
@@ -67,16 +68,17 @@ int main()
 	ben->addWeaponStash(st2);
 
 	joe->addWeaponStash(st2);
-
+	joe->setDifficulty(50);
 	fs.storePlayer(ben, joe);
 	ben->setName("Bob");
 	fs.saveFile();
 	
 	fs.loadFile();
-
-
-
+	cout << fs.isBad();
 	*/
+
+
+	
 	
 	GameContainer game = GameContainer();
 	if (game.isGameEnd())

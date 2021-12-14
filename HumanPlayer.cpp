@@ -52,6 +52,7 @@ Shot HumanPlayer::aimShot()
 }
 bool HumanPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)
 {
+	isQuitB = false;
 	KeyboardListener keys = KeyboardListener(120);
 	keys.addKey('W');
 	keys.addKey('P');
@@ -168,6 +169,11 @@ bool HumanPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)
 		if (power > 100)
 		{
 			power = 100;
+		}
+		if (inc == 'Q') // quit the game
+		{
+			isQuitB = true;
+			return false;
 		}
 		if (inc != 0)
 		{
