@@ -48,9 +48,13 @@ void Tank::repair()
 void Tank::takeDamage(int points)
 {
     // as tank gets more damaged, set armorFactor
-	armorFactorVL = armorFactor - Console::mapValue(currentHP, 0, maxHP,10, 0);
+	//armorFactorVL = armorFactor - Console::mapValue(currentHP, 0, maxHP,10, 0);
 
-	currentHP = currentHP - points * (100.0 / armorFactorVL);
+	currentHP = currentHP - points; // * (100.0 / armorFactorVL);
+}
+void Tank::setMaxHP(int h)
+{
+	maxHP = h;
 }
 bool Tank::isDead()
 {
