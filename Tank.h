@@ -30,5 +30,6 @@ public:
 	int getY();
 	void repair();
 	void setMaxHP(int h);
+	void setHP(int h);
 };
 #endif

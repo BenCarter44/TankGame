@@ -26,6 +26,10 @@ int Tank::getHP()
 {
 	return currentHP;
 }
+void Tank::setHP(int h)
+{
+	currentHP = h;
+}
 int Tank::getMaxHP()
 {
 	return maxHP;

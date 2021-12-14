@@ -48,13 +48,40 @@ Where is the composition?
 #include "GameContainer.h"
 #include "HumanPlayer.h"
 #include "CPUPlayer.h"
+#include "FileSaver.h"
 
 using namespace std;
 using namespace std::chrono;
 
 int main()
 {
-	
+
+	FileSaver fs("tankTest.txt");
+	/*
+	Player* ben = new HumanPlayer("Ben");
+	Player* joe = new CPUPlayer("Joe");
+
+	Weapon pebble = Weapon("Pebbles", 1, 1);
+	Stash st2 = Stash(pebble, 200);
+	ben->setMoney(1000);
+	ben->addWeaponStash(st2);
+
+	joe->addWeaponStash(st2);
+
+	fs.storePlayer(ben, joe);
+	ben->setName("Bob");
+	fs.saveFile();
+	*/
+	fs.loadFile();
+	Player* ben;
+	Player* joe;
+	ben = fs.getPlayer("Bob");
+	joe = fs.getOtherPlayer("Bob");
+
+	cout << ben->getMoney();
+
+
+	/*
 	GameContainer game = GameContainer();
 	if (game.isGameEnd())
 	{
