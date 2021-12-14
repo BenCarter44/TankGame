@@ -225,8 +225,8 @@ void GameContainer::mainMenuScreen()
 	c.addShape(&mainMenu);
 
 	// text
-	c.putString("Tank Game! V1 ", winX.getVal(27), 3);
-	c.putString("By Benjamin Carter ", winX.getVal(28), 4);
+	c.putString("Welcome " + player1->getName() + "!", winX.getVal(27), 3);
+	c.putString("Tank Game By Benjamin Carter ", winX.getVal(28), 4);
 
 
 	string options[] = {
@@ -256,7 +256,8 @@ void GameContainer::mainMenuScreen()
 	while (true)
 	{
 		keys.listen();
-		unsigned char charIn = keys.getKey();
+		unsigned char 
+			charIn = keys.getKey();
 
 		if (newData)
 		{
@@ -770,17 +771,17 @@ void GameContainer::arena()
 		}
 		else
 		{
-			shootingPlayer = player1;
-			defensePlayer = player2;
+			shootingPlayer = player2;
+			defensePlayer = player1;
 		}
 		if (turn)
 		{
 			volley++;
 		}
-		turn = !turn;
+		
 		
 		bool out = false;
-		if (shootingPlayer->isCPUPlayer()) // is shooting player human
+		if (shootingPlayer->isCPUPlayer()) // is shooting player CPU
 		{
 			shootingPlayer->saveOtherTank(defensePlayer->getTank());
 		}
@@ -891,6 +892,7 @@ void GameContainer::arena()
 		printLabelArena();
 		c.putString("Volley: " + to_string(volley) + " of 10", winX.getVal(45), winY.getVal(46));
 		c.smartRender();
+		turn = !turn;
 	}
 
 	
