@@ -3,6 +3,21 @@
 
 
 /*
+
+
+  _______          _       _____                             __
+ |__   __|        | |     / ____|                           /_ |
+	| | __ _ _ __ | | __ | |  __  __ _ _ __ ___   ___  __   _| |
+	| |/ _` | '_ \| |/ / | | |_ |/ _` | '_ ` _ \ / _ \ \ \ / / |
+	| | (_| | | | |   <  | |__| | (_| | | | | | |  __/  \ V /| |
+	|_|\__,_|_| |_|_|\_\  \_____|\__,_|_| |_| |_|\___|   \_/ |_|
+
+
+
+
+
+
+
 Contain a store
 Contain ability to save player progress. (store on server, or load from file) 
 
@@ -28,6 +43,7 @@ Video:
 Where is the inheritance?
 Where is the polymorphic variable?
 Where is the composition?
+
 
 
 */
