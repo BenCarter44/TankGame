@@ -359,8 +359,8 @@ void GameContainer::mainMenuScreen()
 	}
 	else if (out == 2)
 	{
-		c.clear();
-		c.addShape(&background);
+	//	c.clear();
+	//	c.addShape(&background);
 
 		FileSaver fs("tankTest.txt");
 		fs.loadFile();
@@ -399,8 +399,8 @@ void GameContainer::mainMenuScreen()
 	}
 	else if (out == 3)
 	{
-		c.clear();
-		c.addShape(&background);
+	//	c.clear();
+	//	c.addShape(&background);
 
 		FileSaver fs("tankTest.txt");
 		fs.loadFile();

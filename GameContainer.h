@@ -55,16 +55,17 @@ private: // common game elements
 	Player* player1;
 	Player* player2;
 	void printLabelArena();
-public:
-	GameContainer();
-	void startMenu();
 	void newPlayerMenu();
 	void loadPlayerMenu();
 	void onlinePlayerMenu();
 	void mainMenuScreen();
-	bool isGameEnd();
+	
 	void arena();
 	void shop();
+public:
+	GameContainer();
+	void startMenu();
+	bool isGameEnd();
 	static void sleep(unsigned int l);
 
 
