@@ -1,3 +1,18 @@
+/*
+
+Tank class
+
+
+By Benjamin Carter - December 14, 2021
+
+
+This class stores information about a tank, such as maxHP, currentHP, armor, and location.
+The armor factor is not implemented at this time.
+
+There are some methods that interact with the tank, such as takeDamage or repair which do as expected.
+
+*/
+
 #ifndef TANKH
 #define TANKH
 

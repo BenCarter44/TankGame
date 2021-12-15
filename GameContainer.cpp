@@ -1,12 +1,42 @@
+/*
 
+GameContainer class
+
+
+By Benjamin Carter - December 14, 2021
+
+This class contains the main parts of the program!!
+
+Each section of the game has its own method.
+
+In the constructor, similar styles and shapes are stored to be used throughout the game.
+
+The newPlayerMenu() deals with the query of the new player's name
+
+The loadPlayerMenu() obtains which player to load the data from.
+
+The onlinePlayerMenu() is saved for the future.
+
+The mainMenuScreen() is the main selection screen, where the user can select to go to the arena or the shop
+
+The arena() displays the arena
+The shop() displays the shop
+
+
+All the displaying is through the Console object of c. Console is the main class of the PrettyConsole project. See TankGame.h for more info.
+WindowScaler is used to create a grid on where to display everything.
+
+The players are polymorhic variables of the player class. This allows them to be a CPUPlayer or a HumanPlayer
+
+
+*/
 #include "GameContainer.h"
-// 
-// https://textkool.com/en/ascii-art-generator?hl=default&vl=default&font=Big&text=Tank%20Game%20V2%0A
+
 GameContainer::GameContainer()
 {
 	// setup game globals
 	
-	endGame = !c.getSupport();
+	endGame = !c.getSupport();  // see if the computer supports PrettyConsole
 	cout << "Please resize screen now to approporate size! Must be above 40x21";
 	
 	sleep(5000);
@@ -30,7 +60,7 @@ GameContainer::GameContainer()
 	joe->addWeaponStash(st2);
 	joe->setDifficulty(100);
 	player1 = ben;
-	player2 = joe;
+	player2 = joe;   // setup the pretend players (will be overwritten)
 
 
 
@@ -54,7 +84,7 @@ GameContainer::GameContainer()
 	keys2.addKey('G');
 	keys2.addKey('H');
 	keys2.addKey('I');
-	keys2.addKey('J');
+	keys2.addKey('J');  // setup the keyboard listeners
 	keys2.addKey('K');
 	keys2.addKey('L');
 	keys2.addKey('M');
@@ -76,7 +106,7 @@ GameContainer::GameContainer()
 	keys2.addKey(VK_CAPITAL);
 #endif
 	// styles
-	backgroundStyle.setBackgroundColor(35, 96, 0);
+	backgroundStyle.setBackgroundColor(35, 96, 0);  // setup the styles
 	backgroundStyle.setTextColor(20, 255, 20);
 
 	titleBackground.setBackgroundColor(168, 84, 0);
@@ -108,7 +138,7 @@ GameContainer::GameContainer()
 }
 void GameContainer::startMenu()
 {
-	c.fillScreen();
+	c.fillScreen();  // add the shapes
 	// Background!
 	c.addShape(&background);
 	// Menu Window. Will have a banner at the top and a selection box.	
@@ -134,7 +164,7 @@ void GameContainer::startMenu()
 		
 	}
 	c.putString("By Benjamin Carter ", winX.getVal(28), 4+6);
-
+	  // display the titles
 	string options[] = {
 		"Start as a new player",
 		"Load player",
@@ -574,7 +604,7 @@ void GameContainer::shop()
 	costs[0] = player1->getTank()->getMaxHP() - player1->getTank()->getHP();
 	costs[0] = costs[0];
 
-	for (int x = 0; x < 12; x++)
+	for (int x = 0; x < 12; x++)  // for each weapon, display them
 	{
 		Rectangle2D* r = new Rectangle2D(winX.getVal(52 + 11 * (x % 3)), winY.getVal(40 - 7 * (x / 3)), winX.getLength(11), winY.getLength(6));
 		Style sty;
@@ -659,7 +689,7 @@ void GameContainer::shop()
 			return;
 		}
 	}
-	if (selection == 0)
+	if (selection == 0)  // the prompt code - repair
 	{
 		// repair!
 		Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
@@ -724,7 +754,7 @@ void GameContainer::shop()
 		}
 
 	}
-	else if (selection == 1)
+	else if (selection == 1) // the prompt code - armor
 	{
 		// armor!
 		Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(6));
@@ -811,7 +841,7 @@ void GameContainer::shop()
 		
 	
 	}
-	else if (selection > 1)
+	else if (selection > 1) // the prompt code, any other weapon
 	{
 		// weapons
 		Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(6));
@@ -1201,40 +1231,14 @@ void GameContainer::arena()
 	// player stuff
 	
 	// make the tank a little harder
-
+		// make the CPUPlayer harder
 	if (player2->getDifficulty() > 5)
 	{
 		player2->setDifficulty(player2->getDifficulty() - 1);
 	}
 
 	
-
-	
-	
-	/*
-	Tank t = Tank();
-	t.setX(0);
-	t.setY(5);
-
-
-	joe.saveOtherTank(&t);
-	joe.setTank(100, 15);
-
-	Shot mys = joe.aimShot();
-	cout << '\n';
-	cout << mys.getAngle() << '\n';
-	cout << mys.getPower() << '\n';
-
-	return;
-	*/
-
-
-
-	//joe.addWeaponStash(st);
-	//joe.addWeaponStash(st2);
-
-	//ben.displayAll();
-	//return;
+	// get player info
 	string player1Name = player1->getName();
 	string player2Name = player2->getName();
 
@@ -1602,24 +1606,5 @@ void GameContainer::arena()
 
 	mainMenuScreen();
 	
-
-
-
-
-
-	/*
-	HumanPlayer hp = HumanPlayer("Ben");
-	CPUPlayer cpuPlayer = CPUPlayer("Computer");
-
-	Weapon w = Weapon("Gun", 5);
-
-	hp.addWeaponStash(Stash(w, 15));
-	hp.displayAll();
-
-	Tank* t = cpuPlayer.getTank();
-	t->takeDamage(w.getDamage());
-
-	cpuPlayer.displayAll();
-	*/
 
 }

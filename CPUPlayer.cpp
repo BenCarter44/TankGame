@@ -1,3 +1,26 @@
+/*
+
+CPUPlayer class
+
+
+By Benjamin Carter - December 14, 2021
+
+This class extends the Player class, specifically for a computer player.
+
+
+This class contains a pointer to the opponent's tank.
+This allows for it to aim accurately.
+
+The CPUPlayer calculates the shot under the aimMenu method.
+
+The difficulty determines how far/close the shot will be to the opponent.
+
+100 is far 1 is close.
+
+
+
+*/
+
 #include "CPUPlayer.h"
 
 
@@ -24,7 +47,7 @@ void CPUPlayer::saveOtherTank(Tank* t)
 {
 	otherTank = t;
 }
-bool CPUPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)
+bool CPUPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)  // calculate the right angle and power. I had to dervive the formuala.
 {
 	int xe = otherTank->getX() - tank.getX() + 1;
 	int ye = otherTank->getY() - tank.getY();
