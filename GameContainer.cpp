@@ -49,12 +49,12 @@ GameContainer::GameContainer()
 
 
 	// players
-	HumanPlayer* ben = new HumanPlayer("Ben");
-	CPUPlayer* joe = new CPUPlayer("Joe");
+	HumanPlayer* ben = new HumanPlayer("Ben"); // default player 1
+	CPUPlayer* joe = new CPUPlayer("Joe");     // default player 2
 
 	Weapon pebble = Weapon("Pebbles", 1, 1);
 	Stash st2 = Stash(pebble, 200);
-	ben->setMoney(1000);
+	ben->setMoney(150);
 	ben->addWeaponStash(st2);
 
 	joe->addWeaponStash(st2);
@@ -1037,6 +1037,11 @@ void GameContainer::newPlayerMenu()
 	player1->setMoney(o);
 	player2->init("CPU");
 	player2->setDifficulty(100);
+
+	Weapon pebble = Weapon("Pebbles", 1, 1);
+	Stash st2 = Stash(pebble, 2000);
+	player2->addWeaponStash(st2);
+
 	mainMenuScreen();
 
 	// return player name as string playerName
@@ -1229,13 +1234,39 @@ void GameContainer::arena()
 {
 
 	// player stuff
-	
+	player2->getTank()->repair();
 	// make the tank a little harder
 		// make the CPUPlayer harder
 	if (player2->getDifficulty() > 5)
 	{
 		player2->setDifficulty(player2->getDifficulty() - 1);
 	}
+	else
+	{
+		
+		vector<Stash*> theWeapons = player2->getWeapons();
+		int x = theWeapons.size();
+		int last = 0;
+		if (x != 0)
+		{
+			last = theWeapons[x-1]->getWeaponType().getDamage();
+		}
+		int f = 0;
+		if (last + 10 > last * 1.5)
+		{
+			f = last + 10;
+		}
+		else
+		{
+			f = last * 1.5;
+		}
+		Weapon q = Weapon("Wep" + to_string(x), f);
+
+		Stash newWeaponSet = Stash(q, 150);
+		player2->addWeaponStash(newWeaponSet);
+
+	}
+	
 
 	
 	// get player info
@@ -1396,10 +1427,7 @@ void GameContainer::arena()
 			shootingPlayer = player2;
 			defensePlayer = player1;
 		}
-		if (turn)
-		{
-			volley++;
-		}
+		
 		if (turn)
 		{
 
@@ -1556,6 +1584,10 @@ void GameContainer::arena()
 		printLabelArena();
 		c.putString("Volley: " + to_string(volley) + " of 10", winX.getVal(45), winY.getVal(46));
 		c.smartRender();
+		if (turn)
+		{
+			volley++;
+		}
 		turn = !turn;
 	}
 

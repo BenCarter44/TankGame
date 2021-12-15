@@ -53,11 +53,11 @@ bool CPUPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)  // 
 	int ye = otherTank->getY() - tank.getY();
 	srand(time(0));
 
-	int offsetN = (rand() % difficulty) * ((rand() % 2) * -1); // adjusts the power, -100 t0 100
+	int offsetN = (rand() % (difficulty * 2)) * ((rand() % 2) * -1); // adjusts the power, -100 t0 100
 
 	xe = xe + offsetN / 2;
 	
-	offsetN = (rand() % difficulty) * ((rand() % 2) * -1);
+	offsetN = (rand() % (difficulty * 2)) * ((rand() % 2) * -1);
 	ye = ye + offsetN / 10;
 
 
