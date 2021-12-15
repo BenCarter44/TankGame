@@ -83,14 +83,15 @@ int main()
 	joe->setDifficulty(90);
 	ben->setDifficulty(1);
 	fs.storePlayer(ben, joe);
-	ben->setName("Jake");
+	ben->setName("JakeBot");
+	joe->setName("CPU");
 	fs.saveFile();
 	
 	fs.loadFile();
 	cout << fs.isBad();
 	
-	
 	*/
+	
 	
 	
 	GameContainer game = GameContainer();  // create a game object

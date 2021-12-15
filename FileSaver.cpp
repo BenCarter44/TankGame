@@ -191,11 +191,11 @@ void FileSaver::loadFile()
 			}
 			if (tokens[9] == "0")
 			{
-				p2 = new HumanPlayer(tokens[0]);
+				p2 = new HumanPlayer(tokens[7]);
 			}
 			else
 			{
-				p2 = new CPUPlayer(tokens[0]);
+				p2 = new CPUPlayer(tokens[7]);
 			}
 			try
 			{
