@@ -477,7 +477,7 @@ void GameContainer::shop()
 	Rectangle2D* back3 = new Rectangle2D(winX.getVal(5), winY.getVal(43), winX.getLength(89), winY.getLength(36));
 	Rectangle2D* back2 = new Rectangle2D(winX.getVal(3), winY.getVal(47), winX.getLength(20), winY.getLength(5));
 	Rectangle2D* back4 = new Rectangle2D(winX.getVal(7), winY.getVal(38), winX.getLength(38), winY.getLength(29));
-	Rectangle2D* highlight1 = new Rectangle2D(winX.getVal(7), winY.getVal(42), winX.getLength(25), winY.getLength(2));
+	Rectangle2D* highlight1 = new Rectangle2D(winX.getVal(7), winY.getVal(42), winX.getLength(32), winY.getLength(2));
 	Rectangle2D* highlight2 = new Rectangle2D(winX.getVal(8), winY.getVal(36), winX.getLength(35), 1);
 	Rectangle2D* highlight3 = new Rectangle2D(winX.getVal(83), winY.getVal(44), winX.getLength(9), 1);
 
@@ -1172,28 +1172,28 @@ void GameContainer::printLabelArena()
 
 	Tank* tankPlayer1 = player1->getTank();
 	Tank* tankPlayer2 = player2->getTank();
-	c.putString("Tank Arena!", winX.getVal(41), winY.getVal(48));
-	c.putString(player1Name + " vs. " + player2Name, winX.getVal(41), winY.getVal(47));
+	c.putString("Tank Arena!", winX.getVal(45), winY.getVal(48));
+	c.putString(player1Name + " vs. " + player2Name, winX.getVal(44), winY.getVal(47));
 	
 
-	c.putString(player1Name, winX.getVal(1), winY.getVal(48));
+	c.putString(player1Name, winX.getVal(2), winY.getVal(48));
 
 	int health = tankPlayer1->getHP();
 	int maxHealth = tankPlayer1->getMaxHP();
 	int percent = (health * 100) / maxHealth;
-	c.putString("Health: " + to_string(health) + "/" + to_string(maxHealth) + "  (" + to_string(percent) + "%)  ", winX.getVal(1), winY.getVal(46));
+	c.putString("Health: " + to_string(health) + "/" + to_string(maxHealth) + "  (" + to_string(percent) + "%)  ", winX.getVal(3), winY.getVal(46));
 
 	int money = player1->getMoney();
-	c.putString("Dollars: $" + to_string(money), winX.getVal(1), winY.getVal(45));
+	c.putString("Dollars: $" + to_string(money), winX.getVal(3), winY.getVal(45));
 
 
-	c.putString(player2Name, winX.getVal(99) - player2Name.length(), winY.getVal(48));
+	c.putString(player2Name, winX.getVal(99) - player2Name.length() - 1, winY.getVal(48));
 
 	health = tankPlayer2->getHP();
 	maxHealth = tankPlayer2->getMaxHP();
 	percent = (health * 100) / maxHealth;
 	string outString = "  Health: " + to_string(health) + "/" + to_string(maxHealth) + "  (" + to_string(percent) + "%)  ";
-	c.putString(outString, winX.getVal(99) - outString.length(), winY.getVal(46));
+	c.putString(outString, winX.getVal(99) - outString.length()-2, winY.getVal(46));
 }
 void GameContainer::arena()
 {
@@ -1253,36 +1253,52 @@ void GameContainer::arena()
 	Rectangle2D* volleyTicker = new Rectangle2D(winX.getVal(44), winY.getVal(46), winX.getLength(12), 1);
 	Rectangle2D* turnMarker = new Rectangle2D(winX.getVal(1), winY.getVal(43), winX.getVal(8), 1);
 
+	
 	Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
 	
 
 	// styles
 	
-	backgroundStyle.setTextColor(255, 255, 255);
-	background.setFill(backgroundStyle);
+	Rectangle2D background;
+	background.init(0, 0, c.getWidth(), c.getHeight());
+
+
+	Style backCopy;
+	backCopy.init(backgroundStyle);
+	backCopy.setBackgroundColor(20, 20, 20);
+
+	background.setFill(backCopy);
 
 	
-	Style usernameBox;
-	usernameBox.setBackgroundColor(0, 255, 255);
+	//Style usernameBox;
+	//usernameBox.setBackgroundColor(187, 253, 198);
+	//usernameBox.setTextColor(255, 255, 220);
 
 	Style tickerStyle;
-	tickerStyle.setBackgroundColor(255, 127, 0);
+	tickerStyle.setBackgroundColor(35, 96, 0);
+	tickerStyle.setTextColor(0, 255, 0);
 
 	Style dialogBoxIn;
 	Style dialogBoxOut;
 
-	dialogBoxIn.setBackgroundColor(127, 127, 127);
-	dialogBoxOut.setBackgroundColor(80, 80, 80);
+	dialogBoxIn.init(mainMenuBackground);
+	dialogBoxOut.init(mainMenuSubStyle);
 
-	usernameStatusBoxL->setFill(usernameBox);
-	usernameStatusBoxR->setFill(usernameBox);
+	//dialogBoxIn.setBackgroundColor(127, 127, 127);
+	//dialogBoxOut.setBackgroundColor(80, 80, 80);
+	dialogBoxIn.setTextColor(255, 255, 200);
+	dialogBox->setFill(dialogBoxIn);
+	dialogBox->setBorder(dialogBoxOut);
+
+	usernameStatusBoxL->setFill(mainMenuBackground);
+	usernameStatusBoxR->setFill(mainMenuBackground);
 	titleBox->setFill(titleBackground);
 	volleyTicker->setFill(tickerStyle);
 	//turnMarker->setFill(tickerStyle);
 
-	dialogBox->setFill(dialogBoxIn);
-	dialogBox->setBorder(dialogBoxOut);
 	
+
+
 
 	// add shapes
 	c.clear();
@@ -1316,6 +1332,7 @@ void GameContainer::arena()
 	}
 	for (int y = 0; y < c.getHeight(); y++)
 	{
+
 		for (int x = 0; x < c.getWidth(); x++)
 		{
 			//cout << winX.getVal(x) << " " << winY.getVal(y) << '\n';
@@ -1332,11 +1349,12 @@ void GameContainer::arena()
 
 
 
+
 	// tanks
 	
 	Rectangle2D tank1 = Rectangle2D(winX.getVal(3), c.getHeight() - totalHeights[winX.getVal(4)] - winY.getLength(2), winX.getLength(4), winY.getLength(2));
 	Style tankStyle;
-	tankStyle.setBackgroundColor(255, 255, 0);
+	tankStyle.setBackgroundColor(0, 0, 255);
 	tank1.setFill(tankStyle);
 	c.addShape(&tank1);
 
@@ -1345,7 +1363,7 @@ void GameContainer::arena()
 
 	Rectangle2D tank2 = Rectangle2D(winX.getVal(93), c.getHeight() - totalHeights[winX.getVal(93)] - winY.getLength(2), winX.getLength(4), winY.getLength(2));
 
-	tank2.setFill(tankStyle);
+	tank2.setFill(titleBackground);
 	c.addShape(&tank2);
 
 	player2->setTank(93, winY.reverse(c.getHeight() - totalHeights[winX.getVal(93)] - winY.getLength(2)));
@@ -1387,7 +1405,7 @@ void GameContainer::arena()
 			c.putString("Player1's turn", winX.getVal(2), winY.getVal(43));
 
 			Rectangle2D turnMarker2 = Rectangle2D(winX.getVal(91), winY.getVal(43), winX.getVal(8), 1);
-			turnMarker2.setFill(backgroundStyle);
+			turnMarker2.setFill(backCopy);
 			c.addShape(&turnMarker2);
 
 			c.putString("              ", winX.getVal(92), winY.getVal(43));
@@ -1400,7 +1418,7 @@ void GameContainer::arena()
 			c.addShape(turnMarker);
 
 			Rectangle2D turnMarker2 = Rectangle2D(winX.getVal(1), winY.getVal(43), winX.getVal(8), 1);
-			turnMarker2.setFill(backgroundStyle);
+			turnMarker2.setFill(backCopy);
 			c.addShape(&turnMarker2);
 
 			turnMarker->init(winX.getVal(91), winY.getVal(43), winX.getVal(8), 1);
@@ -1435,14 +1453,14 @@ void GameContainer::arena()
 		//	c.putString(to_string((int)(myShot.getPower()*10) / 10.0) + "  ", 15, 0);
 			myShot.calculatePoints();
 			Rectangle2D dialogBoxBlackout = Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
-			dialogBoxBlackout.setFill(backgroundStyle);
+			dialogBoxBlackout.setFill(backCopy);
 			c.addShape(&dialogBoxBlackout);
 
 
 			vector<PStruct> pts = myShot.getPoints();
 			// draw the shot
 			Style weaponStyle;
-			weaponStyle.setBackgroundColor(255, 0, 0);
+			weaponStyle.setBackgroundColor(255, 255, 0);
 			Point2D actualPoint;
 
 			Style oldStyle;
