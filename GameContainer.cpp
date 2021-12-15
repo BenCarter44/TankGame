@@ -1,10 +1,42 @@
+/*
 
+GameContainer class
+
+
+By Benjamin Carter - December 14, 2021
+
+This class contains the main parts of the program!!
+
+Each section of the game has its own method.
+
+In the constructor, similar styles and shapes are stored to be used throughout the game.
+
+The newPlayerMenu() deals with the query of the new player's name
+
+The loadPlayerMenu() obtains which player to load the data from.
+
+The onlinePlayerMenu() is saved for the future.
+
+The mainMenuScreen() is the main selection screen, where the user can select to go to the arena or the shop
+
+The arena() displays the arena
+The shop() displays the shop
+
+
+All the displaying is through the Console object of c. Console is the main class of the PrettyConsole project. See TankGame.h for more info.
+WindowScaler is used to create a grid on where to display everything.
+
+The players are polymorhic variables of the player class. This allows them to be a CPUPlayer or a HumanPlayer
+
+
+*/
 #include "GameContainer.h"
+
 GameContainer::GameContainer()
 {
 	// setup game globals
 	
-	endGame = !c.getSupport();
+	endGame = !c.getSupport();  // see if the computer supports PrettyConsole
 	cout << "Please resize screen now to approporate size! Must be above 40x21";
 	
 	sleep(5000);
@@ -26,9 +58,9 @@ GameContainer::GameContainer()
 	ben->addWeaponStash(st2);
 
 	joe->addWeaponStash(st2);
-
+	joe->setDifficulty(100);
 	player1 = ben;
-	player2 = joe;
+	player2 = joe;   // setup the pretend players (will be overwritten)
 
 
 
@@ -52,7 +84,7 @@ GameContainer::GameContainer()
 	keys2.addKey('G');
 	keys2.addKey('H');
 	keys2.addKey('I');
-	keys2.addKey('J');
+	keys2.addKey('J');  // setup the keyboard listeners
 	keys2.addKey('K');
 	keys2.addKey('L');
 	keys2.addKey('M');
@@ -74,48 +106,65 @@ GameContainer::GameContainer()
 	keys2.addKey(VK_CAPITAL);
 #endif
 	// styles
-	backgroundStyle.setBackgroundColor(20, 20, 20);
+	backgroundStyle.setBackgroundColor(35, 96, 0);  // setup the styles
 	backgroundStyle.setTextColor(20, 255, 20);
 
-	titleBackground.setBackgroundColor(0, 0, 255);
-	titleBackground.setTextColor(255, 255, 255);
+	titleBackground.setBackgroundColor(168, 84, 0);
+	titleBackground.setTextColor(255, 255, 0);
 
-	mainMenuBackground.setBackgroundColor(255, 0, 255);
-	mainMenuBackground.setTextColor(255, 255, 255);
+	mainMenuBackground.setBackgroundColor(175, 171, 171);
+	mainMenuBackground.setTextColor(0, 0, 0);
 	mainMenuBackground.turnOffBlink();
 
-	selection.setBackgroundColor(50, 50, 50);
-	selection.setTextColor(255, 0, 0);
+	selection.setBackgroundColor(150, 150, 255);
+	selection.setTextColor(255, 255, 0);
 
 	textBoxBackground.setBackgroundColor(150, 150, 150);
 	textBoxBackground.setTextColor(255, 255, 255);
 
+	mainMenuSubStyle.setBackgroundColor(50, 50, 50);
+
 	// shapes
 	background.init(0, 0, c.getWidth(), c.getHeight());
-	title.init(winX.getVal(25), 2, winX.getVal(50), 4);
-	mainMenu.init(winX.getVal(25), 7, winX.getVal(50), c.getHeight() - 3 - 7);
-
+	title.init(winX.getVal(25), 2, winX.getVal(50), 9);
+	mainMenu.init(winX.getVal(25),12, winX.getVal(50), c.getHeight() - 5 -11);
+	mainMenuSub.init(winX.getVal(25)+2, 12+1, winX.getVal(50), c.getHeight() - 5 - 11);
 	// patches
 	background.setFill(backgroundStyle);
 	title.setFill(titleBackground);
 	mainMenu.setFill(mainMenuBackground);
+	mainMenuSub.setFill(mainMenuSubStyle);
 
 }
 void GameContainer::startMenu()
 {
-	c.fillScreen();
+	c.fillScreen();  // add the shapes
 	// Background!
 	c.addShape(&background);
 	// Menu Window. Will have a banner at the top and a selection box.	
 	c.addShape(&title);
 	// Bottom menu window
+	c.addShape(&mainMenuSub);
 	c.addShape(&mainMenu);
 
 	// text
-	c.putString("Tank Game! V1 ", winX.getVal(27), 3);
-	c.putString("By Benjamin Carter ", winX.getVal(28), 4);
+	string fancyTitle[] =
+	{
+		"  _______          _       _____                       __      _____  ",
+		" |__   __|        | |     / ____|                      \\ \\    / /__ \\ ",
+		"    | | __ _ _ __ | | __ | |  __  __ _ _ __ ___   ___   \\ \\  / /   ) |",
+		"    | |/ _` | '_ \\| |/ / | | |_ |/ _` | '_ ` _ \\ / _ \\   \\ \\/ /   / / ",
+		"    | | (_| | | | |   <  | |__| | (_| | | | | | |  __/    \\  /   / /_ ",
+		"    |_|\\__,_|_| |_|_|\\_\\  \\_____|\\__,_|_| |_| |_|\\___|     \\/   |____|"
+	};
 
-
+	for (int x = 0; x < 6; x++)
+	{
+		c.putString(fancyTitle[x], winX.getVal(27), 3+x);
+		
+	}
+	c.putString("By Benjamin Carter ", winX.getVal(28), 4+6);
+	  // display the titles
 	string options[] = {
 		"Start as a new player",
 		"Load player",
@@ -126,17 +175,17 @@ void GameContainer::startMenu()
 	for (int x = 0; x < 4; x++)
 	{
 		string tx = to_string(x + 1) + " - " + options[x];
-		c.putString(tx, winX.getVal(27), 8 + x);
+		c.putString(tx, winX.getVal(27), 13 + x);
 	}
-	c.setTitle("Tank Game V1");
+	c.setTitle("Tank Game V2 - Benjamin Carter");
 	c.render();
 
 #ifndef LINUX
 	
 	// get user input
 
-	int cursor = 8;
-	int oldCursor = 8;
+	int cursor = 13;
+	int oldCursor = 13;
 	bool newData = true;
 	int out = 0;
 	while (true)
@@ -154,8 +203,8 @@ void GameContainer::startMenu()
 			itemOld.setFill(mainMenuBackground);
 			c.addShape(&itemOld);
 			c.addShape(&itemCurrent);
-			c.putString(to_string(cursor - 8 + 1) + " - " + options[cursor - 8], winX.getVal(27), cursor);
-			c.putString(to_string(oldCursor - 8 + 1) + " - " + options[oldCursor - 8], winX.getVal(27), oldCursor);
+			c.putString(to_string(cursor - 13 + 1) + " - " + options[cursor - 13], winX.getVal(27), cursor);
+			c.putString(to_string(oldCursor - 13 + 1) + " - " + options[oldCursor - 13], winX.getVal(27), oldCursor);
 			c.smartRender();
 			newData = false;
 		}
@@ -173,16 +222,16 @@ void GameContainer::startMenu()
 		}
 		else if (charIn == VK_RETURN)
 		{
-			out = cursor - 8;
+			out = cursor - 13;
 			break;
 		}
-		if (cursor < 8)
+		if (cursor < 13)
 		{
-			cursor = 4 + 8 - 1;
+			cursor = 4 + 13 - 1;
 		}
-		else if (cursor >= (8 + 4))
+		else if (cursor >= (13 + 4))
 		{
-			cursor = 8;
+			cursor = 13;
 		}
 		sleep(25); // 40fps 
 
@@ -223,11 +272,35 @@ void GameContainer::mainMenuScreen()
 	// Menu Window. Will have a banner at the top and a selection box.	
 	c.addShape(&title);
 	// Bottom menu window
+	c.addShape(&mainMenuSub);
 	c.addShape(&mainMenu);
 
 	// text
-	c.putString("Welcome " + player1->getName() + "!", winX.getVal(27), 3);
-	c.putString("Tank Game By Benjamin Carter ", winX.getVal(28), 4);
+	
+
+	
+
+	string fancyTitle[] =
+	{
+		"  _______          _       _____                       __      _____  ",
+		" |__   __|        | |     / ____|                      \\ \\    / /__ \\ ",
+		"    | | __ _ _ __ | | __ | |  __  __ _ _ __ ___   ___   \\ \\  / /   ) |",
+		"    | |/ _` | '_ \\| |/ / | | |_ |/ _` | '_ ` _ \\ / _ \\   \\ \\/ /   / / ",
+		"    | | (_| | | | |   <  | |__| | (_| | | | | | |  __/    \\  /   / /_ ",
+		"    |_|\\__,_|_| |_|_|\\_\\  \\_____|\\__,_|_| |_| |_|\\___|     \\/   |____|"
+	};
+
+	for (int x = 0; x < 6; x++)
+	{
+		c.putString(fancyTitle[x], winX.getVal(27), 3 + x);
+
+	}
+	c.putString("By Benjamin Carter ", winX.getVal(28), 4 + 6);
+	c.putString("Welcome " + player1->getName() + "!", winX.getVal(55), 4 + 6);
+
+
+	// text
+
 
 
 	string options[] = {
@@ -241,17 +314,16 @@ void GameContainer::mainMenuScreen()
 	for (int x = 0; x < 5; x++)
 	{
 		string tx = to_string(x + 1) + " - " + options[x];
-		c.putString(tx, winX.getVal(27), 8 + x);
+		c.putString(tx, winX.getVal(27), 13 + x);
 	}
-	c.setTitle("Tank Game V1");
 	c.render();
 
 #ifndef LINUX
 
 	// get user input
-
-	int cursor = 8;
-	int oldCursor = 8;
+	sleep(100);
+	int cursor = 13;
+	int oldCursor = 13;
 	bool newData = true;
 	int out = 0;
 	while (true)
@@ -270,8 +342,8 @@ void GameContainer::mainMenuScreen()
 			itemOld.setFill(mainMenuBackground);
 			c.addShape(&itemOld);
 			c.addShape(&itemCurrent);
-			c.putString(to_string(cursor - 8 + 1) + " - " + options[cursor - 8], winX.getVal(27), cursor);
-			c.putString(to_string(oldCursor - 8 + 1) + " - " + options[oldCursor - 8], winX.getVal(27), oldCursor);
+			c.putString(to_string(cursor - 13 + 1) + " - " + options[cursor - 13], winX.getVal(27), cursor);
+			c.putString(to_string(oldCursor - 13 + 1) + " - " + options[oldCursor - 13], winX.getVal(27), oldCursor);
 			c.smartRender();
 			newData = false;
 		}
@@ -289,16 +361,16 @@ void GameContainer::mainMenuScreen()
 		}
 		else if (charIn == VK_RETURN)
 		{
-			out = cursor - 8;
+			out = cursor - 13;
 			break;
 		}
-		if (cursor < 8)
+		if (cursor < 13)
 		{
-			cursor = 5 + 8 - 1;
+			cursor = 5 + 13 - 1;
 		}
-		else if (cursor >= (8 + 5))
+		else if (cursor >= (13 + 5))
 		{
-			cursor = 8;
+			cursor = 13;
 		}
 		sleep(25); // 40fps 
 
@@ -317,23 +389,99 @@ void GameContainer::mainMenuScreen()
 	}
 	else if (out == 2)
 	{
-		c.clear();
-		c.addShape(&background);
+	//	c.clear();
+	//	c.addShape(&background);
 
-		c.putString("Save game!", 0, 0);
-		c.render();
-		sleep(2000);
-		mainMenuScreen();
+		FileSaver fs("tankTest.txt");
+		fs.loadFile();
+		if (fs.isBad())
+		{
+			c.putString("Failed to save game!", 0, 0);
+			c.render();
+			sleep(2000);
+			mainMenuScreen();
+		}
+		else
+		{
+			fs.storePlayer(player1, player2);
+			fs.saveFile();
+			Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
+			Style dialogBoxIn;
+			Style dialogBoxOut;
+
+			dialogBoxIn.init(mainMenuBackground);
+			dialogBoxOut.init(mainMenuSubStyle);
+
+			//dialogBoxIn.setBackgroundColor(127, 127, 127);
+			//dialogBoxOut.setBackgroundColor(80, 80, 80);
+			dialogBoxIn.setTextColor(255, 255, 200);
+			dialogBox->setFill(dialogBoxIn);
+			dialogBox->setBorder(dialogBoxOut);
+
+			c.addShape(dialogBox);
+			c.putString("Saved game!", winX.getVal(35), winY.getVal(34));
+			c.smartRender();
+			sleep(2000);
+			mainMenuScreen();
+		}
+
+		
 	}
 	else if (out == 3)
 	{
-		c.addShape(&background);
+	//	c.clear();
+	//	c.addShape(&background);
 
-		c.putString("Save game!", 0, 0);
-		c.render();
-		sleep(2000);
-		mainMenuScreen();
-		endGame = true;
+		FileSaver fs("tankTest.txt");
+		fs.loadFile();
+		if (fs.isBad())
+		{
+			Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
+			Style dialogBoxIn;
+			Style dialogBoxOut;
+
+			dialogBoxIn.init(mainMenuBackground);
+			dialogBoxOut.init(mainMenuSubStyle);
+
+			//dialogBoxIn.setBackgroundColor(127, 127, 127);
+			//dialogBoxOut.setBackgroundColor(80, 80, 80);
+			dialogBoxIn.setTextColor(255, 255, 200);
+			dialogBox->setFill(dialogBoxIn);
+			dialogBox->setBorder(dialogBoxOut);
+
+			c.addShape(dialogBox);
+			c.putString("Failed to save game!", winX.getVal(35), winY.getVal(34));
+			c.smartRender();
+			sleep(2000);
+			mainMenuScreen();
+		}
+		else
+		{
+			fs.storePlayer(player1, player2);
+			fs.saveFile();
+			Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
+			Style dialogBoxIn;
+			Style dialogBoxOut;
+
+			dialogBoxIn.init(mainMenuBackground);
+			dialogBoxOut.init(mainMenuSubStyle);
+
+			//dialogBoxIn.setBackgroundColor(127, 127, 127);
+			//dialogBoxOut.setBackgroundColor(80, 80, 80);
+			dialogBoxIn.setTextColor(255, 255, 200);
+			dialogBox->setFill(dialogBoxIn);
+			dialogBox->setBorder(dialogBoxOut);
+
+			c.addShape(dialogBox);
+			c.putString("Saved game!", winX.getVal(35), winY.getVal(34));
+			c.smartRender();
+			sleep(2000);
+			c.clear();
+			c.addShape(&background);
+			c.render();
+			endGame = true;
+		}
+		
 	}
 	else if (out == 4)
 	{
@@ -359,7 +507,7 @@ void GameContainer::shop()
 	Rectangle2D* back3 = new Rectangle2D(winX.getVal(5), winY.getVal(43), winX.getLength(89), winY.getLength(36));
 	Rectangle2D* back2 = new Rectangle2D(winX.getVal(3), winY.getVal(47), winX.getLength(20), winY.getLength(5));
 	Rectangle2D* back4 = new Rectangle2D(winX.getVal(7), winY.getVal(38), winX.getLength(38), winY.getLength(29));
-	Rectangle2D* highlight1 = new Rectangle2D(winX.getVal(7), winY.getVal(42), winX.getLength(25), winY.getLength(2));
+	Rectangle2D* highlight1 = new Rectangle2D(winX.getVal(7), winY.getVal(42), winX.getLength(32), winY.getLength(2));
 	Rectangle2D* highlight2 = new Rectangle2D(winX.getVal(8), winY.getVal(36), winX.getLength(35), 1);
 	Rectangle2D* highlight3 = new Rectangle2D(winX.getVal(83), winY.getVal(44), winX.getLength(9), 1);
 
@@ -368,30 +516,48 @@ void GameContainer::shop()
 
 	// styles
 	
-	Style s;
-	s.setBackgroundColor(1);
-	back1->setFill(s);
-	Style s2;
-	s2.setBackgroundColor(2);
-	back2->setFill(s2);
-	Style s3;
-	s3.setBackgroundColor(3);
-	back3->setFill(s3);
+
+	
+	
+	
+	back1->setFill(mainMenuSubStyle);
+	back2->setFill(titleBackground);
+
+	Style topInfo;
+	topInfo.setTextColor(0, 0, 0);
+	topInfo.setBackgroundColor(169, 253, 221);
+
+	back3->setFill(mainMenuBackground);
+
+
 	Style s4;
-	s4.setBackgroundColor(4);
+	s4.setBackgroundColor(214,220,229);
 	back4->setFill(s4);
-	Style s5;
-	s5.setBackgroundColor(5);
-	highlight1->setFill(s5);
-	Style s6;
-	s6.setBackgroundColor(6);
-	highlight2->setFill(s6);
-	Style s7;
-	s7.setBackgroundColor(7);
-	highlight3->setFill(s7);
+
+
+	Style selCopy;
+	selCopy.setBackgroundColor(189, 189, 255);
+	selCopy.setTextColor(20, 0, 255);
+	
+	highlight2->setFill(selCopy);
+	//highlight2->setFill
+
+
+	
+	highlight1->setFill(topInfo);
+
+
+	Style quitSty;
+	quitSty.setBackgroundColor(248, 176, 174);
+	quitSty.setTextColor(255, 0, 0);
+
+	highlight3->setFill(quitSty);
+
+
+	
 	Style s8;
 	s8.setBackgroundColor(2);
-	highlight4->setFill(s8);
+	highlight4->setFill(titleBackground);
 
 	c.addShape(back1);
 	c.addShape(back2);
@@ -407,11 +573,12 @@ void GameContainer::shop()
 //	return;
 	c.putString("Store", winX.getVal(51), winY.getVal(42));
 	c.putString("Tank Game!", winX.getVal(4), winY.getVal(46));
+	c.putString("By Benjamin Carter", winX.getVal(4), winY.getVal(46)+1);
 	c.putString("You have $" + to_string(player1->getMoney()), winX.getVal(7), winY.getVal(42));
 	int percent = (player1->getTank()->getHP() * 100) / player1->getTank()->getMaxHP();
 	c.putString("Your tank has currrently " + to_string(player1->getTank()->getHP()) + " out of " + to_string(player1->getTank()->getMaxHP()) + "hp - " + to_string(percent) + "% left", winX.getVal(7), winY.getVal(41));
 	c.putString("Your current stash: ", winX.getVal(8), winY.getVal(36));
-	c.putString("Press Q to quit ", winX.getVal(83), winY.getVal(44));
+	c.putString("Press Q to quit ", winX.getVal(83)+1, winY.getVal(44));
 
 
 
@@ -435,20 +602,20 @@ void GameContainer::shop()
 	int costs[] = { 1,10,1,2,15,40,50,80,120,180,250,1000 };
 
 	costs[0] = player1->getTank()->getMaxHP() - player1->getTank()->getHP();
-	costs[0] = costs[0] / 2;
+	costs[0] = costs[0];
 
-	for (int x = 0; x < 12; x++)
+	for (int x = 0; x < 12; x++)  // for each weapon, display them
 	{
 		Rectangle2D* r = new Rectangle2D(winX.getVal(52 + 11 * (x % 3)), winY.getVal(40 - 7 * (x / 3)), winX.getLength(11), winY.getLength(6));
 		Style sty;
 		sty.setTextColor(0);
 		if (color)
 		{
-			sty.setBackgroundColor(10);
+			sty.setBackgroundColor(187,253,198);
 		}
 		else
 		{
-			sty.setBackgroundColor(11);
+			sty.setBackgroundColor(188,249,252);
 		}
 		r->setFill(sty);
 		color = !color;
@@ -474,12 +641,12 @@ void GameContainer::shop()
 			c.putString("Cost: $" + to_string(costs[x]), winX.getVal(54 + 11 * (x % 3)), winY.getVal(37 - 7 * (x / 3)));
 			c.putString("Press " + string(1, allSelections[x]) + " to buy", winX.getVal(54 + 11 * (x % 3)), winY.getVal(36 - 7 * (x / 3)));
 		}
-		c.smartRender();
+		
 		//sleep(50);
 
 		delete r;
 	}
-
+	c.smartRender();
 	vector<Stash*> myStash = player1->getWeapons();
 
 
@@ -522,7 +689,7 @@ void GameContainer::shop()
 			return;
 		}
 	}
-	if (selection == 0)
+	if (selection == 0)  // the prompt code - repair
 	{
 		// repair!
 		Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
@@ -533,10 +700,17 @@ void GameContainer::shop()
 		Style dialogBoxIn;
 		Style dialogBoxOut;
 
-		dialogBoxIn.setBackgroundColor(127, 127, 127);
-		dialogBoxOut.setBackgroundColor(80, 80, 80);
+		dialogBoxIn.init(mainMenuBackground);
+		dialogBoxOut.init(mainMenuSubStyle);
+
+		//dialogBoxIn.setBackgroundColor(127, 127, 127);
+		//dialogBoxOut.setBackgroundColor(80, 80, 80);
+		dialogBoxIn.setTextColor(255, 255, 200);
 		dialogBox->setFill(dialogBoxIn);
 		dialogBox->setBorder(dialogBoxOut);
+
+
+
 		c.addShape(dialogBox);
 		
 
@@ -571,6 +745,7 @@ void GameContainer::shop()
 				}
 			}
 		}
+
 		else
 		{
 			c.putString("Not enough funds!", winX.getVal(35), winY.getVal(35));
@@ -579,7 +754,7 @@ void GameContainer::shop()
 		}
 
 	}
-	else if (selection == 1)
+	else if (selection == 1) // the prompt code - armor
 	{
 		// armor!
 		Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(6));
@@ -590,11 +765,16 @@ void GameContainer::shop()
 		Style dialogBoxIn;
 		Style dialogBoxOut;
 
-		dialogBoxIn.setBackgroundColor(127, 127, 127);
-		dialogBoxOut.setBackgroundColor(80, 80, 80);
-		
+		dialogBoxIn.init(mainMenuBackground);
+		dialogBoxOut.init(mainMenuSubStyle);
+
+		//dialogBoxIn.setBackgroundColor(127, 127, 127);
+		//dialogBoxOut.setBackgroundColor(80, 80, 80);
+		dialogBoxIn.setTextColor(255, 255, 200);
 		dialogBox->setFill(dialogBoxIn);
 		dialogBox->setBorder(dialogBoxOut);
+
+
 
 		c.addShape(dialogBox);
 
@@ -661,7 +841,7 @@ void GameContainer::shop()
 		
 	
 	}
-	else if (selection > 1)
+	else if (selection > 1) // the prompt code, any other weapon
 	{
 		// weapons
 		Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(6));
@@ -672,13 +852,19 @@ void GameContainer::shop()
 		Style dialogBoxIn;
 		Style dialogBoxOut;
 
-		dialogBoxIn.setBackgroundColor(127, 127, 127);
-		dialogBoxOut.setBackgroundColor(80, 80, 80);
+		dialogBoxIn.init(mainMenuBackground);
+		dialogBoxOut.init(mainMenuSubStyle);
 
+		//dialogBoxIn.setBackgroundColor(127, 127, 127);
+		//dialogBoxOut.setBackgroundColor(80, 80, 80);
+		dialogBoxIn.setTextColor(255, 255, 200);
 		dialogBox->setFill(dialogBoxIn);
 		dialogBox->setBorder(dialogBoxOut);
 
+		
+		
 		c.addShape(dialogBox);
+
 
 
 		int money = player1->getMoney();
@@ -735,7 +921,10 @@ void GameContainer::shop()
 			}
 			else if (inc == VK_DOWN)
 			{
-				quantity--;
+				if (quantity > 0)
+				{
+					quantity--;
+				}
 				c.putString("Quantity to order: " + to_string(quantity) + "  ", winX.getVal(35), winY.getVal(34));
 				c.putString("Total Cost: " + to_string(quantity * costs[selection]) + "  ", winX.getVal(35), winY.getVal(33));
 				c.smartRender();
@@ -759,20 +948,39 @@ void GameContainer::newPlayerMenu()
 	c.addShape(&title);
 	// Bottom menu window
 
-	Rectangle2D mainMenu = Rectangle2D(winX.getVal(25), 7, winX.getLength(50), 6);
+	//Rectangle2D mainMenu = Rectangle2D(winX.getVal(25), 7, winX.getLength(50), 6);
 	
-	mainMenu.setFill(mainMenuBackground);
+	//mainMenu.setFill(mainMenuBackground);
+	c.addShape(&mainMenuSub);
 	c.addShape(&mainMenu);
 
-	Rectangle2D textBox = Rectangle2D(winX.getVal(26), 10, winX.getLength(48), 1);	
+	Rectangle2D textBox = Rectangle2D(winX.getVal(26), 15, winX.getLength(48), 1);	
 	textBox.setFill(textBoxBackground);
+
 	c.addShape(&textBox);
 
+	string fancyTitle[] =
+	{
+		"  _______          _       _____                       __      _____  ",
+		" |__   __|        | |     / ____|                      \\ \\    / /__ \\ ",
+		"    | | __ _ _ __ | | __ | |  __  __ _ _ __ ___   ___   \\ \\  / /   ) |",
+		"    | |/ _` | '_ \\| |/ / | | |_ |/ _` | '_ ` _ \\ / _ \\   \\ \\/ /   / / ",
+		"    | | (_| | | | |   <  | |__| | (_| | | | | | |  __/    \\  /   / /_ ",
+		"    |_|\\__,_|_| |_|_|\\_\\  \\_____|\\__,_|_| |_| |_|\\___|     \\/   |____|"
+	};
 
+	for (int x = 0; x < 6; x++)
+	{
+		c.putString(fancyTitle[x], winX.getVal(27), 3 + x);
+
+	}
+	c.putString("By Benjamin Carter ", winX.getVal(28), 4 + 6);
+
+	
 	// text
-	c.putString("Welcome new player! ", winX.getVal(27), 8);
-	c.putString("What is your name? ", winX.getVal(28), 9);
-	c.smartRender();
+	c.putString("Welcome new player! ", winX.getVal(27), 13);
+	c.putString("What is your name? ", winX.getVal(28), 14);
+	c.render();
 
 	
 
@@ -818,8 +1026,8 @@ void GameContainer::newPlayerMenu()
 			{
 				dump = dump + ' ';
 			}
-			c.putString(dump, winX.getVal(26), 10);
-			c.putString(playerName, winX.getVal(26), 10);
+			c.putString(dump, winX.getVal(26), 15);
+			c.putString(playerName, winX.getVal(26), 15);
 			c.smartRender();
 		}
 		sleep(25);
@@ -841,36 +1049,72 @@ void GameContainer::loadPlayerMenu()
 	// Menu Window. Will have a banner at the top and a selection box.	
 	c.addShape(&title);
 	// Bottom menu window
+	c.addShape(&mainMenuSub);
 	c.addShape(&mainMenu);
 
-	// text
-	c.putString("Tank Game! V1 ", winX.getVal(27), 3);
-	c.putString("By Benjamin Carter ", winX.getVal(28), 4);
+	Rectangle2D textBox = Rectangle2D(winX.getVal(26), 14, winX.getLength(48), 1);
+	textBox.setFill(textBoxBackground);
 
-	c.putString("Pick a player to load:", winX.getVal(27), 8);
+	c.addShape(&textBox);
 
-	string options[] = {
-		"Player 1",
-		"Player 2",
-		"Player 3",
-		"Player 4"
+	string fancyTitle[] =
+	{
+		"  _______          _       _____                       __      _____  ",
+		" |__   __|        | |     / ____|                      \\ \\    / /__ \\ ",
+		"    | | __ _ _ __ | | __ | |  __  __ _ _ __ ___   ___   \\ \\  / /   ) |",
+		"    | |/ _` | '_ \\| |/ / | | |_ |/ _` | '_ ` _ \\ / _ \\   \\ \\/ /   / / ",
+		"    | | (_| | | | |   <  | |__| | (_| | | | | | |  __/    \\  /   / /_ ",
+		"    |_|\\__,_|_| |_|_|\\_\\  \\_____|\\__,_|_| |_| |_|\\___|     \\/   |____|"
 	};
 
-	int optionSize = 4;
+	for (int x = 0; x < 6; x++)
+	{
+		c.putString(fancyTitle[x], winX.getVal(27), 3 + x);
+
+	}
+	c.putString("By Benjamin Carter ", winX.getVal(28), 4 + 6);
+
+
+	// text
+
+
+	c.putString("Pick a player to load:", winX.getVal(27), 14);
+	
+	
+	FileSaver fs("tankTest.txt");
+	
+	fs.loadFile();
+	if (fs.isBad())
+	{
+		c.putString("Bad File!", 0, 0);
+		c.smartRender();
+		sleep(2000);
+		endGame = true;
+		return;
+	}
+	vector<string> options = fs.getPlayerNames();
+
+
+
+
+	int optionSize = options.size();
+
 
 	for (int x = 0; x < optionSize; x++)
 	{
+		//cout << options[x] << endl;
 		string tx = to_string(x + 1) + " - " + options[x];
-		c.putString(tx, winX.getVal(27), 9 + x);
+		c.putString(tx, winX.getVal(27), 16 + x);
 	}
+	//return;
 	c.smartRender();
 
 #ifndef LINUX
 
 	// get user input
 
-	int cursor = 9;
-	int oldCursor = 9;
+	int cursor = 16;
+	int oldCursor = 16;
 	bool newData = true;
 	int out = 0;
 	while (true)
@@ -888,8 +1132,8 @@ void GameContainer::loadPlayerMenu()
 			itemOld.setFill(mainMenuBackground);
 			c.addShape(&itemOld);
 			c.addShape(&itemCurrent);
-			c.putString(to_string(cursor - 9 + 1) + " - " + options[cursor - 9], winX.getVal(27), cursor);
-			c.putString(to_string(oldCursor - 9 + 1) + " - " + options[oldCursor - 9], winX.getVal(27), oldCursor);
+			c.putString(to_string(cursor - 16 + 1) + " - " + options[cursor - 16], winX.getVal(27), cursor);
+			c.putString(to_string(oldCursor - 16 + 1) + " - " + options[oldCursor - 16], winX.getVal(27), oldCursor);
 			c.smartRender();
 			newData = false;
 		}
@@ -907,16 +1151,16 @@ void GameContainer::loadPlayerMenu()
 		}
 		else if (charIn == VK_RETURN)
 		{
-			out = cursor - 9;
+			out = cursor - 16;
 			break;
 		}
-		if (cursor < 9)
+		if (cursor < 16)
 		{
-			cursor = optionSize + 9 - 1;
+			cursor = optionSize + 16 - 1;
 		}
-		else if (cursor >= (9 + optionSize))
+		else if (cursor >= (16 + optionSize))
 		{
-			cursor = 9;
+			cursor = 16;
 		}
 		sleep(25); // 40fps 
 
@@ -924,10 +1168,12 @@ void GameContainer::loadPlayerMenu()
 	// returns out - the number that the user selected. 
 #endif
 
-	c.putString(options[out], 0, 0);
-	c.smartRender();
-	sleep(1000);
-	endGame = true;
+
+	player1 = fs.getPlayer(options[out]);
+	player2 = fs.getOtherPlayer(options[out]);
+
+	mainMenuScreen();
+	
 }
 void GameContainer::onlinePlayerMenu()
 {
@@ -956,61 +1202,43 @@ void GameContainer::printLabelArena()
 
 	Tank* tankPlayer1 = player1->getTank();
 	Tank* tankPlayer2 = player2->getTank();
-	c.putString("Tank Arena!", winX.getVal(41), winY.getVal(48));
-	c.putString(player1Name + " vs. " + player2Name, winX.getVal(41), winY.getVal(47));
+	c.putString("Tank Arena!", winX.getVal(45), winY.getVal(48));
+	c.putString(player1Name + " vs. " + player2Name, winX.getVal(44), winY.getVal(47));
 	
 
-	c.putString(player1Name, winX.getVal(1), winY.getVal(48));
+	c.putString(player1Name, winX.getVal(2), winY.getVal(48));
 
 	int health = tankPlayer1->getHP();
 	int maxHealth = tankPlayer1->getMaxHP();
 	int percent = (health * 100) / maxHealth;
-	c.putString("Health: " + to_string(health) + "/" + to_string(maxHealth) + "  (" + to_string(percent) + "%)  ", winX.getVal(1), winY.getVal(46));
+	c.putString("Health: " + to_string(health) + "/" + to_string(maxHealth) + "  (" + to_string(percent) + "%)  ", winX.getVal(3), winY.getVal(46));
 
 	int money = player1->getMoney();
-	c.putString("Dollars: $" + to_string(money), winX.getVal(1), winY.getVal(45));
+	c.putString("Dollars: $" + to_string(money), winX.getVal(3), winY.getVal(45));
 
 
-	c.putString(player2Name, winX.getVal(99) - player2Name.length(), winY.getVal(48));
+	c.putString(player2Name, winX.getVal(99) - player2Name.length() - 1, winY.getVal(48));
 
 	health = tankPlayer2->getHP();
 	maxHealth = tankPlayer2->getMaxHP();
 	percent = (health * 100) / maxHealth;
 	string outString = "  Health: " + to_string(health) + "/" + to_string(maxHealth) + "  (" + to_string(percent) + "%)  ";
-	c.putString(outString, winX.getVal(99) - outString.length(), winY.getVal(46));
+	c.putString(outString, winX.getVal(99) - outString.length()-2, winY.getVal(46));
 }
 void GameContainer::arena()
 {
 
 	// player stuff
 	
+	// make the tank a little harder
+		// make the CPUPlayer harder
+	if (player2->getDifficulty() > 5)
+	{
+		player2->setDifficulty(player2->getDifficulty() - 1);
+	}
 
 	
-	
-	/*
-	Tank t = Tank();
-	t.setX(0);
-	t.setY(5);
-
-
-	joe.saveOtherTank(&t);
-	joe.setTank(100, 15);
-
-	Shot mys = joe.aimShot();
-	cout << '\n';
-	cout << mys.getAngle() << '\n';
-	cout << mys.getPower() << '\n';
-
-	return;
-	*/
-
-
-
-	//joe.addWeaponStash(st);
-	//joe.addWeaponStash(st2);
-
-	//ben.displayAll();
-	//return;
+	// get player info
 	string player1Name = player1->getName();
 	string player2Name = player2->getName();
 
@@ -1029,36 +1257,52 @@ void GameContainer::arena()
 	Rectangle2D* volleyTicker = new Rectangle2D(winX.getVal(44), winY.getVal(46), winX.getLength(12), 1);
 	Rectangle2D* turnMarker = new Rectangle2D(winX.getVal(1), winY.getVal(43), winX.getVal(8), 1);
 
+	
 	Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
 	
 
 	// styles
 	
-	backgroundStyle.setTextColor(255, 255, 255);
-	background.setFill(backgroundStyle);
+	Rectangle2D background;
+	background.init(0, 0, c.getWidth(), c.getHeight());
+
+
+	Style backCopy;
+	backCopy.init(backgroundStyle);
+	backCopy.setBackgroundColor(20, 20, 20);
+
+	background.setFill(backCopy);
 
 	
-	Style usernameBox;
-	usernameBox.setBackgroundColor(0, 255, 255);
+	//Style usernameBox;
+	//usernameBox.setBackgroundColor(187, 253, 198);
+	//usernameBox.setTextColor(255, 255, 220);
 
 	Style tickerStyle;
-	tickerStyle.setBackgroundColor(255, 127, 0);
+	tickerStyle.setBackgroundColor(35, 96, 0);
+	tickerStyle.setTextColor(0, 255, 0);
 
 	Style dialogBoxIn;
 	Style dialogBoxOut;
 
-	dialogBoxIn.setBackgroundColor(127, 127, 127);
-	dialogBoxOut.setBackgroundColor(80, 80, 80);
+	dialogBoxIn.init(mainMenuBackground);
+	dialogBoxOut.init(mainMenuSubStyle);
 
-	usernameStatusBoxL->setFill(usernameBox);
-	usernameStatusBoxR->setFill(usernameBox);
+	//dialogBoxIn.setBackgroundColor(127, 127, 127);
+	//dialogBoxOut.setBackgroundColor(80, 80, 80);
+	dialogBoxIn.setTextColor(255, 255, 200);
+	dialogBox->setFill(dialogBoxIn);
+	dialogBox->setBorder(dialogBoxOut);
+
+	usernameStatusBoxL->setFill(mainMenuBackground);
+	usernameStatusBoxR->setFill(mainMenuBackground);
 	titleBox->setFill(titleBackground);
 	volleyTicker->setFill(tickerStyle);
 	//turnMarker->setFill(tickerStyle);
 
-	dialogBox->setFill(dialogBoxIn);
-	dialogBox->setBorder(dialogBoxOut);
 	
+
+
 
 	// add shapes
 	c.clear();
@@ -1076,6 +1320,8 @@ void GameContainer::arena()
 	c.putString("Volley: " + to_string(volley) + " of 10", winX.getVal(45), winY.getVal(46));
 
 
+	//c.putString(to_string(player2->getDifficulty()), 0, 0);
+
 	// ground
 	Ground groundHandler = Ground(c.getWidth(), c.getHeight());
 
@@ -1090,6 +1336,7 @@ void GameContainer::arena()
 	}
 	for (int y = 0; y < c.getHeight(); y++)
 	{
+
 		for (int x = 0; x < c.getWidth(); x++)
 		{
 			//cout << winX.getVal(x) << " " << winY.getVal(y) << '\n';
@@ -1106,11 +1353,12 @@ void GameContainer::arena()
 
 
 
+
 	// tanks
 	
 	Rectangle2D tank1 = Rectangle2D(winX.getVal(3), c.getHeight() - totalHeights[winX.getVal(4)] - winY.getLength(2), winX.getLength(4), winY.getLength(2));
 	Style tankStyle;
-	tankStyle.setBackgroundColor(255, 255, 0);
+	tankStyle.setBackgroundColor(0, 0, 255);
 	tank1.setFill(tankStyle);
 	c.addShape(&tank1);
 
@@ -1119,7 +1367,7 @@ void GameContainer::arena()
 
 	Rectangle2D tank2 = Rectangle2D(winX.getVal(93), c.getHeight() - totalHeights[winX.getVal(93)] - winY.getLength(2), winX.getLength(4), winY.getLength(2));
 
-	tank2.setFill(tankStyle);
+	tank2.setFill(titleBackground);
 	c.addShape(&tank2);
 
 	player2->setTank(93, winY.reverse(c.getHeight() - totalHeights[winX.getVal(93)] - winY.getLength(2)));
@@ -1161,7 +1409,7 @@ void GameContainer::arena()
 			c.putString("Player1's turn", winX.getVal(2), winY.getVal(43));
 
 			Rectangle2D turnMarker2 = Rectangle2D(winX.getVal(91), winY.getVal(43), winX.getVal(8), 1);
-			turnMarker2.setFill(backgroundStyle);
+			turnMarker2.setFill(backCopy);
 			c.addShape(&turnMarker2);
 
 			c.putString("              ", winX.getVal(92), winY.getVal(43));
@@ -1174,7 +1422,7 @@ void GameContainer::arena()
 			c.addShape(turnMarker);
 
 			Rectangle2D turnMarker2 = Rectangle2D(winX.getVal(1), winY.getVal(43), winX.getVal(8), 1);
-			turnMarker2.setFill(backgroundStyle);
+			turnMarker2.setFill(backCopy);
 			c.addShape(&turnMarker2);
 
 			turnMarker->init(winX.getVal(91), winY.getVal(43), winX.getVal(8), 1);
@@ -1195,20 +1443,28 @@ void GameContainer::arena()
 			c.addShape(dialogBox);
 		}
 		out = shootingPlayer->aimMenu(c, winX, winY);
+		bool isQuit = shootingPlayer->isQuit();
+		if (isQuit)
+		{
+			break;
+		}
+		
 		c.smartRender();
 		if (out) // if they can shoot a valid shot
 		{
 			Shot myShot = shootingPlayer->aimShot();
+		//	c.putString(to_string((int)myShot.getAngle()) + "  ", 10, 0);
+		//	c.putString(to_string((int)(myShot.getPower()*10) / 10.0) + "  ", 15, 0);
 			myShot.calculatePoints();
 			Rectangle2D dialogBoxBlackout = Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
-			dialogBoxBlackout.setFill(backgroundStyle);
+			dialogBoxBlackout.setFill(backCopy);
 			c.addShape(&dialogBoxBlackout);
 
 
 			vector<PStruct> pts = myShot.getPoints();
 			// draw the shot
 			Style weaponStyle;
-			weaponStyle.setBackgroundColor(255, 0, 0);
+			weaponStyle.setBackgroundColor(255, 255, 0);
 			Point2D actualPoint;
 
 			Style oldStyle;
@@ -1255,7 +1511,10 @@ void GameContainer::arena()
 
 						opponentTank->takeDamage(myShot.getWeapon().getDamage());
 						shootingPlayer->earnMoney(myShot.getWeapon().getDamage());
-						
+						if (opponentTank->getHP() <= 0)
+						{
+							volley = 100;
+						}
 						break;
 					}
 						
@@ -1303,10 +1562,13 @@ void GameContainer::arena()
 	if (damageP1 - player1->getTank()->getHP() < damageP2 - player2->getTank()->getHP())
 	{
 		// win!
-		int winning = ((damageP2 - player2->getTank()->getHP()) * (damageP2 - player2->getTank()->getHP())) - ((damageP1 - player1->getTank()->getHP()) * (damageP1 - player1->getTank()->getHP()));
+		//int winning = ((damageP2 - player2->getTank()->getHP()) * (damageP2 - player2->getTank()->getHP())) - ((damageP1 - player1->getTank()->getHP()) * (damageP1 - player1->getTank()->getHP()));
+		int winning = ((damageP2 - player2->getTank()->getHP())) - (damageP1 - player1->getTank()->getHP());
 		c.addShape(dialogBox);
-		string out = "You won the match. You receive $" + to_string(winning);
+		string out = "Game over!";
 		c.putString(out, winX.getVal(35), winY.getVal(35));
+		out = "You won the match. You receive $" + to_string(winning);
+		c.putString(out, winX.getVal(35), winY.getVal(34));
 		c.smartRender();
 		player1->earnMoney(winning);
 		sleep(2000);
@@ -1314,10 +1576,12 @@ void GameContainer::arena()
 	}
 	else if(damageP1 - player1->getTank()->getHP() > damageP2 - player2->getTank()->getHP())
 	{
-		int winning = ((damageP2 - player2->getTank()->getHP()) * (damageP2 - player2->getTank()->getHP())) - ((damageP1 - player1->getTank()->getHP()) * (damageP1 - player1->getTank()->getHP()));
+		int winning = ((damageP2 - player2->getTank()->getHP())) - (damageP1 - player1->getTank()->getHP());
 		c.addShape(dialogBox);
-		string out = "Soory, you lost the match.";
+		string out = "Game over!";
 		c.putString(out, winX.getVal(35), winY.getVal(35));
+		out = "Soory, you lost the match.";
+		c.putString(out, winX.getVal(35), winY.getVal(34));
 		c.smartRender();
 		player2->earnMoney(winning);
 		sleep(2000);
@@ -1325,8 +1589,10 @@ void GameContainer::arena()
 	else
 	{
 		c.addShape(dialogBox);
-		string out = "It's a tie!";
+		string out = "Game over!";
 		c.putString(out, winX.getVal(35), winY.getVal(35));
+		out = "It's a tie!";
+		c.putString(out, winX.getVal(35), winY.getVal(34));
 		c.smartRender();
 		sleep(2000);
 
@@ -1338,26 +1604,7 @@ void GameContainer::arena()
 
 
 
+	mainMenuScreen();
 	
-	
-
-
-
-
-
-	/*
-	HumanPlayer hp = HumanPlayer("Ben");
-	CPUPlayer cpuPlayer = CPUPlayer("Computer");
-
-	Weapon w = Weapon("Gun", 5);
-
-	hp.addWeaponStash(Stash(w, 15));
-	hp.displayAll();
-
-	Tank* t = cpuPlayer.getTank();
-	t->takeDamage(w.getDamage());
-
-	cpuPlayer.displayAll();
-	*/
 
 }

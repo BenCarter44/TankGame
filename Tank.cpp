@@ -26,6 +26,10 @@ int Tank::getHP()
 {
 	return currentHP;
 }
+void Tank::setHP(int h)
+{
+	currentHP = h;
+}
 int Tank::getMaxHP()
 {
 	return maxHP;
@@ -41,7 +45,7 @@ int Tank::getArmor()
 }
 void Tank::repair()
 {
-	int currentHP = maxHP;
+	currentHP = maxHP;
 	armorFactorVL = armorFactor;
 
 }

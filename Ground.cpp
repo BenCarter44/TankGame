@@ -1,4 +1,18 @@
+/*
 
+Ground class
+
+
+By Benjamin Carter - December 14, 2021
+
+This class calculates and stores the ground in the arena.
+The class calculates a random ground pattern through the groundRandomizer()
+
+To calculate the random ground, several cosine curves are averaged together. Each magnitude of the cosine curve is a random number from -25 to 25
+
+Then, the ground is saved into the affected array.
+
+*/
 #include "Ground.h"
 
 Ground::Ground()
@@ -71,7 +85,7 @@ bool Ground::isGround(int x, int y)
 {
 	return affected[y][x];
 }
-void Ground::updateGround(int* ground)
+void Ground::updateGround(int* ground)  // set bars of ones on each column starting at the bottom of the array.
 {
 	//cout << "apple!\n";
 	for (int col = 0; col < width; col++)
@@ -98,6 +112,14 @@ void Ground::groundRandomizer()
 {
 	srand(time(0));
 	
+
+	/*
+	Ground Randomizer.
+
+	Add up a number of cosine (max of 7) functions. 
+	Get their average value and put them into the array.
+	
+	*/
 
 
 	// create 
@@ -138,7 +160,7 @@ void Ground::groundRandomizer()
 	}
 	
 	*/
-	updateGround(randGround);
+	updateGround(randGround);  // put the values into the array.
 	
 	delete[] rStore;
 }

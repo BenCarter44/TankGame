@@ -21,6 +21,11 @@ void Player::init(string name)
 	isCPU = false;
 	money = 0;
 }
+void Player::addWeaponStash(Stash& s)
+{
+	Stash* newStash = new Stash(s.getWeaponType(), s.getRemaining());
+	weaponHold.push_back(newStash); // create new obj
+}
 
 void Player::setName(string name)
 {

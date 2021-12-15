@@ -1,3 +1,23 @@
+/*
+
+Shot class
+
+
+By Benjamin Carter - December 14, 2021
+
+
+This class stores information about the trajectory of a shot 
+
+This is where the points of the trajectory of a shot is calculated.
+This class uses the math c++ library to do that. 
+
+The class stors the shot power, angle, and starting X and Y's
+Each point is then pushed to the vector of PStruct
+
+
+
+
+*/
 #ifndef SHOTH
 #define SHOTH
 
@@ -6,7 +26,7 @@
 #include "Weapon.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
-// #include <iostream>
+
 
 class Shot
 {
@@ -14,7 +34,7 @@ class Shot
 	// contains correct power and angle. Also, contains a weapon.
 	// game class will have a method that can display a shot.
 private:
-	vector<PStruct> points;
+	vector<PStruct> points;  // points, power, angle, and other information of the shot.
 	double power;
 	double angle;
 	int startX;
@@ -22,11 +42,11 @@ private:
 	Weapon w;
 
 public:
-	void calculatePoints();
-	vector<PStruct> getPoints();
+	void calculatePoints(); // calculate the points given the startX, startY, power, and angle
+	vector<PStruct> getPoints(); // get the points calculated
 
 	int getStartX();
-	int getStartY();
+	int getStartY();         // get and set
 	void setStartX(int x);
 	void setStartY(int y);
 
@@ -38,7 +58,7 @@ public:
 	void setPower(double p);
 	void setAngle(double a);
 
-	Shot();
+	Shot();                           // constructors here ("init constructors" too)
 	void init();
 	Shot(double p, double a);
 	void init(double p, double a);

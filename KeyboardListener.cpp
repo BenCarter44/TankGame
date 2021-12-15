@@ -1,3 +1,23 @@
+/*
+
+KeyboardListener class
+
+
+By Benjamin Carter - December 14, 2021
+
+This class stores keys to listen to in a vector of character
+
+Then, the class can listen and push all pressed target keys onto the keyStack. The key stack is a stack of character
+The time is also stored.
+
+
+The pauseTime is the amount of delay in milliseconds required before the key is counted as being pressed twice.
+
+
+This class only works on WINDOWS right now!
+Later, will try to get it platform-independent.
+
+*/
 #include "KeyboardListener.h"
 
 KeyboardListener::KeyboardListener()
@@ -18,7 +38,7 @@ void KeyboardListener::addKey(unsigned char keyValue)
 }
 
 
-void KeyboardListener::listen()
+void KeyboardListener::listen()  // listen for the keys
 {
 	using namespace std;
 	using namespace std::chrono;
@@ -26,7 +46,7 @@ void KeyboardListener::listen()
 
 	// windows
 	 // unsigned long long lastTime = 0;
-	for (unsigned int x = 0; x < active.size(); x++)
+	for (unsigned int x = 0; x < active.size(); x++) // go through each key to listen for. If the key is pressed after the time delay, push it to the stack
 	{
 		SHORT keyState = GetKeyState(active[x]);
 		bool isDown = keyState & 0x8000;

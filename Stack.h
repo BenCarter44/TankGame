@@ -6,6 +6,11 @@ Copied from listing 12.7
 
 (Implemented in game)
 
+See comments in the TankGame.cpp for references.
+
+
+This class is a simple last-in first-out stack interface. Similar to the <vector> class
+
 
 */
 
