@@ -1,13 +1,6 @@
 # TankGameV2
 
 
-  _______          _       _____                       __      _____
- |__   __|        | |     / ____|                      \ \    / /__ \
-	| | __ _ _ __ | | __ | |  __  __ _ _ __ ___   ___   \ \  / /   ) |
-	| |/ _` | '_ \| |/ / | | |_ |/ _` | '_ ` _ \ / _ \   \ \/ /   / /
-	| | (_| | | | |   <  | |__| | (_| | | | | | |  __/    \  /   / /_
-	|_|\__,_|_| |_|_|\_\  \_____|\__,_|_| |_| |_|\___|     \/   |____|
-
 By Benjamin Carter - December 14, 2021
 CST-210
 
@@ -37,10 +30,15 @@ The Stash class contains a weapon and the count. A player has a vector list of s
 
 
 Helper classes:
+
     WindowScaler scales all the visual components so that the game works on different screen sizes
+
 	KeyboardListener receives keyboard inputs from the user. Currently, this only works on WINDOWS platforms and is not cross platform
+
 	FileSaver stores all information from the players into a file
+
 	PStruct is a struct-like class for holding x and y points.
+
 	Stack is a general vector-like class implementing a last-in first-out stack. 
 
 
