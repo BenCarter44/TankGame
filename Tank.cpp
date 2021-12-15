@@ -45,7 +45,7 @@ int Tank::getArmor()
 }
 void Tank::repair()
 {
-	int currentHP = maxHP;
+	currentHP = maxHP;
 	armorFactorVL = armorFactor;
 
 }

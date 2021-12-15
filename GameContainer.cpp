@@ -92,7 +92,7 @@ GameContainer::GameContainer()
 	textBoxBackground.setBackgroundColor(150, 150, 150);
 	textBoxBackground.setTextColor(255, 255, 255);
 
-	mainMenuSubStyle.setBackgroundColor(25, 25, 25);
+	mainMenuSubStyle.setBackgroundColor(50, 50, 50);
 
 	// shapes
 	background.init(0, 0, c.getWidth(), c.getHeight());
@@ -375,8 +375,22 @@ void GameContainer::mainMenuScreen()
 		{
 			fs.storePlayer(player1, player2);
 			fs.saveFile();
-			c.putString("Saved game!", 0, 0);
-			c.render();
+			Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
+			Style dialogBoxIn;
+			Style dialogBoxOut;
+
+			dialogBoxIn.init(mainMenuBackground);
+			dialogBoxOut.init(mainMenuSubStyle);
+
+			//dialogBoxIn.setBackgroundColor(127, 127, 127);
+			//dialogBoxOut.setBackgroundColor(80, 80, 80);
+			dialogBoxIn.setTextColor(255, 255, 200);
+			dialogBox->setFill(dialogBoxIn);
+			dialogBox->setBorder(dialogBoxOut);
+
+			c.addShape(dialogBox);
+			c.putString("Saved game!", winX.getVal(35), winY.getVal(34));
+			c.smartRender();
 			sleep(2000);
 			mainMenuScreen();
 		}
@@ -392,8 +406,22 @@ void GameContainer::mainMenuScreen()
 		fs.loadFile();
 		if (fs.isBad())
 		{
-			c.putString("Failed to save game!", 0, 0);
-			c.render();
+			Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
+			Style dialogBoxIn;
+			Style dialogBoxOut;
+
+			dialogBoxIn.init(mainMenuBackground);
+			dialogBoxOut.init(mainMenuSubStyle);
+
+			//dialogBoxIn.setBackgroundColor(127, 127, 127);
+			//dialogBoxOut.setBackgroundColor(80, 80, 80);
+			dialogBoxIn.setTextColor(255, 255, 200);
+			dialogBox->setFill(dialogBoxIn);
+			dialogBox->setBorder(dialogBoxOut);
+
+			c.addShape(dialogBox);
+			c.putString("Failed to save game!", winX.getVal(35), winY.getVal(34));
+			c.smartRender();
 			sleep(2000);
 			mainMenuScreen();
 		}
@@ -401,8 +429,22 @@ void GameContainer::mainMenuScreen()
 		{
 			fs.storePlayer(player1, player2);
 			fs.saveFile();
-			c.putString("Saved game!", 0, 0);
-			c.render();
+			Rectangle2D* dialogBox = new Rectangle2D(winX.getVal(33), winY.getVal(36), winX.getLength(17 * 2), winY.getLength(5));
+			Style dialogBoxIn;
+			Style dialogBoxOut;
+
+			dialogBoxIn.init(mainMenuBackground);
+			dialogBoxOut.init(mainMenuSubStyle);
+
+			//dialogBoxIn.setBackgroundColor(127, 127, 127);
+			//dialogBoxOut.setBackgroundColor(80, 80, 80);
+			dialogBoxIn.setTextColor(255, 255, 200);
+			dialogBox->setFill(dialogBoxIn);
+			dialogBox->setBorder(dialogBoxOut);
+
+			c.addShape(dialogBox);
+			c.putString("Saved game!", winX.getVal(35), winY.getVal(34));
+			c.smartRender();
 			sleep(2000);
 			c.clear();
 			c.addShape(&background);
@@ -444,30 +486,48 @@ void GameContainer::shop()
 
 	// styles
 	
-	Style s;
-	s.setBackgroundColor(1);
-	back1->setFill(s);
-	Style s2;
-	s2.setBackgroundColor(2);
-	back2->setFill(s2);
-	Style s3;
-	s3.setBackgroundColor(3);
-	back3->setFill(s3);
+
+	
+	
+	
+	back1->setFill(mainMenuSubStyle);
+	back2->setFill(titleBackground);
+
+	Style topInfo;
+	topInfo.setTextColor(0, 0, 0);
+	topInfo.setBackgroundColor(169, 253, 221);
+
+	back3->setFill(mainMenuBackground);
+
+
 	Style s4;
-	s4.setBackgroundColor(4);
+	s4.setBackgroundColor(214,220,229);
 	back4->setFill(s4);
-	Style s5;
-	s5.setBackgroundColor(5);
-	highlight1->setFill(s5);
-	Style s6;
-	s6.setBackgroundColor(6);
-	highlight2->setFill(s6);
-	Style s7;
-	s7.setBackgroundColor(7);
-	highlight3->setFill(s7);
+
+
+	Style selCopy;
+	selCopy.setBackgroundColor(189, 189, 255);
+	selCopy.setTextColor(20, 0, 255);
+	
+	highlight2->setFill(selCopy);
+	//highlight2->setFill
+
+
+	
+	highlight1->setFill(topInfo);
+
+
+	Style quitSty;
+	quitSty.setBackgroundColor(248, 176, 174);
+	quitSty.setTextColor(255, 0, 0);
+
+	highlight3->setFill(quitSty);
+
+
+	
 	Style s8;
 	s8.setBackgroundColor(2);
-	highlight4->setFill(s8);
+	highlight4->setFill(titleBackground);
 
 	c.addShape(back1);
 	c.addShape(back2);
@@ -483,11 +543,12 @@ void GameContainer::shop()
 //	return;
 	c.putString("Store", winX.getVal(51), winY.getVal(42));
 	c.putString("Tank Game!", winX.getVal(4), winY.getVal(46));
+	c.putString("By Benjamin Carter", winX.getVal(4), winY.getVal(46)+1);
 	c.putString("You have $" + to_string(player1->getMoney()), winX.getVal(7), winY.getVal(42));
 	int percent = (player1->getTank()->getHP() * 100) / player1->getTank()->getMaxHP();
 	c.putString("Your tank has currrently " + to_string(player1->getTank()->getHP()) + " out of " + to_string(player1->getTank()->getMaxHP()) + "hp - " + to_string(percent) + "% left", winX.getVal(7), winY.getVal(41));
 	c.putString("Your current stash: ", winX.getVal(8), winY.getVal(36));
-	c.putString("Press Q to quit ", winX.getVal(83), winY.getVal(44));
+	c.putString("Press Q to quit ", winX.getVal(83)+1, winY.getVal(44));
 
 
 
@@ -511,7 +572,7 @@ void GameContainer::shop()
 	int costs[] = { 1,10,1,2,15,40,50,80,120,180,250,1000 };
 
 	costs[0] = player1->getTank()->getMaxHP() - player1->getTank()->getHP();
-	costs[0] = costs[0] / 2;
+	costs[0] = costs[0];
 
 	for (int x = 0; x < 12; x++)
 	{
@@ -520,11 +581,11 @@ void GameContainer::shop()
 		sty.setTextColor(0);
 		if (color)
 		{
-			sty.setBackgroundColor(10);
+			sty.setBackgroundColor(187,253,198);
 		}
 		else
 		{
-			sty.setBackgroundColor(11);
+			sty.setBackgroundColor(188,249,252);
 		}
 		r->setFill(sty);
 		color = !color;
@@ -550,12 +611,12 @@ void GameContainer::shop()
 			c.putString("Cost: $" + to_string(costs[x]), winX.getVal(54 + 11 * (x % 3)), winY.getVal(37 - 7 * (x / 3)));
 			c.putString("Press " + string(1, allSelections[x]) + " to buy", winX.getVal(54 + 11 * (x % 3)), winY.getVal(36 - 7 * (x / 3)));
 		}
-		c.smartRender();
+		
 		//sleep(50);
 
 		delete r;
 	}
-
+	c.smartRender();
 	vector<Stash*> myStash = player1->getWeapons();
 
 
@@ -609,10 +670,17 @@ void GameContainer::shop()
 		Style dialogBoxIn;
 		Style dialogBoxOut;
 
-		dialogBoxIn.setBackgroundColor(127, 127, 127);
-		dialogBoxOut.setBackgroundColor(80, 80, 80);
+		dialogBoxIn.init(mainMenuBackground);
+		dialogBoxOut.init(mainMenuSubStyle);
+
+		//dialogBoxIn.setBackgroundColor(127, 127, 127);
+		//dialogBoxOut.setBackgroundColor(80, 80, 80);
+		dialogBoxIn.setTextColor(255, 255, 200);
 		dialogBox->setFill(dialogBoxIn);
 		dialogBox->setBorder(dialogBoxOut);
+
+
+
 		c.addShape(dialogBox);
 		
 
@@ -647,6 +715,7 @@ void GameContainer::shop()
 				}
 			}
 		}
+
 		else
 		{
 			c.putString("Not enough funds!", winX.getVal(35), winY.getVal(35));
@@ -666,11 +735,16 @@ void GameContainer::shop()
 		Style dialogBoxIn;
 		Style dialogBoxOut;
 
-		dialogBoxIn.setBackgroundColor(127, 127, 127);
-		dialogBoxOut.setBackgroundColor(80, 80, 80);
-		
+		dialogBoxIn.init(mainMenuBackground);
+		dialogBoxOut.init(mainMenuSubStyle);
+
+		//dialogBoxIn.setBackgroundColor(127, 127, 127);
+		//dialogBoxOut.setBackgroundColor(80, 80, 80);
+		dialogBoxIn.setTextColor(255, 255, 200);
 		dialogBox->setFill(dialogBoxIn);
 		dialogBox->setBorder(dialogBoxOut);
+
+
 
 		c.addShape(dialogBox);
 
@@ -748,13 +822,19 @@ void GameContainer::shop()
 		Style dialogBoxIn;
 		Style dialogBoxOut;
 
-		dialogBoxIn.setBackgroundColor(127, 127, 127);
-		dialogBoxOut.setBackgroundColor(80, 80, 80);
+		dialogBoxIn.init(mainMenuBackground);
+		dialogBoxOut.init(mainMenuSubStyle);
 
+		//dialogBoxIn.setBackgroundColor(127, 127, 127);
+		//dialogBoxOut.setBackgroundColor(80, 80, 80);
+		dialogBoxIn.setTextColor(255, 255, 200);
 		dialogBox->setFill(dialogBoxIn);
 		dialogBox->setBorder(dialogBoxOut);
 
+		
+		
 		c.addShape(dialogBox);
+
 
 
 		int money = player1->getMoney();
