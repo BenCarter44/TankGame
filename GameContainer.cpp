@@ -66,7 +66,7 @@ GameContainer::GameContainer()
 
 	// keys
 	keys.setPauseTime(150);
-	keys2.setPauseTime(80);
+	keys2.setPauseTime(150);
 
 #ifndef LINUX
 	keys.addKey(VK_UP);
@@ -180,7 +180,7 @@ void GameContainer::startMenu()
 	c.setTitle("Tank Game V2 - Benjamin Carter");
 	c.render();
 
-#ifndef LINUX
+
 	
 	// get user input
 
@@ -188,6 +188,7 @@ void GameContainer::startMenu()
 	int oldCursor = 13;
 	bool newData = true;
 	int out = 0;
+#ifndef LINUX
 	while (true)
 	{
 		keys.listen();
@@ -318,7 +319,7 @@ void GameContainer::mainMenuScreen()
 	}
 	c.render();
 
-#ifndef LINUX
+
 
 	// get user input
 	sleep(100);
@@ -326,6 +327,7 @@ void GameContainer::mainMenuScreen()
 	int oldCursor = 13;
 	bool newData = true;
 	int out = 0;
+#ifndef LINUX
 	while (true)
 	{
 		keys.listen();
@@ -377,7 +379,7 @@ void GameContainer::mainMenuScreen()
 	}
 	// returns out - the number that the user selected. 
 #endif
-
+	sleep(100);
 	if (out == 0)
 	{
 		// start as new player
@@ -788,6 +790,9 @@ void GameContainer::shop()
 		c.putString("Total Cost: " + to_string(quantity * costs[selection]), winX.getVal(35), winY.getVal(33));
 		c.putString("Enter to order or (Q) to quit", winX.getVal(35), winY.getVal(32));
 		c.smartRender();
+#ifndef LINUX
+
+
 
 		KeyboardListener subKey(150);
 		subKey.addKey(VK_UP);
@@ -838,7 +843,7 @@ void GameContainer::shop()
 				c.smartRender();
 			}
 		}
-		
+#endif // !LINUX
 	
 	}
 	else if (selection > 1) // the prompt code, any other weapon
@@ -876,7 +881,7 @@ void GameContainer::shop()
 		c.putString("Total Cost: " + to_string(quantity * costs[selection]), winX.getVal(35), winY.getVal(33));
 		c.putString("Enter to order or (Q) to quit", winX.getVal(35), winY.getVal(32));
 		c.smartRender();
-
+#ifndef LINUX
 		KeyboardListener subKey(150);
 		subKey.addKey(VK_UP);
 		subKey.addKey(VK_DOWN);
@@ -930,7 +935,7 @@ void GameContainer::shop()
 				c.smartRender();
 			}
 		}
-
+#endif
 	}
 	
 	// pop up window. Ask user for amount or exit.
@@ -986,6 +991,8 @@ void GameContainer::newPlayerMenu()
 
 	string playerName = "";
 	bool capital = true;
+#ifndef LINUX
+
 	while (true)
 	{
 		keys2.listen();
@@ -1041,7 +1048,7 @@ void GameContainer::newPlayerMenu()
 	Weapon pebble = Weapon("Pebbles", 1, 1);
 	Stash st2 = Stash(pebble, 2000);
 	player2->addWeaponStash(st2);
-
+#endif
 	mainMenuScreen();
 
 	// return player name as string playerName
@@ -1171,11 +1178,12 @@ void GameContainer::loadPlayerMenu()
 
 	}
 	// returns out - the number that the user selected. 
+	player1 = fs.getPlayer(options[out]);
+	player2 = fs.getOtherPlayer(options[out]);
 #endif
 
 
-	player1 = fs.getPlayer(options[out]);
-	player2 = fs.getOtherPlayer(options[out]);
+	
 
 	mainMenuScreen();
 	
@@ -1196,9 +1204,12 @@ bool GameContainer::isGameEnd()
 }
 void GameContainer::sleep(unsigned int l)
 {
+#ifndef LINUX
+
 	using namespace std::chrono;
 	using namespace std::this_thread;
 	sleep_for(milliseconds(l));
+#endif // !LINUX
 }
 void GameContainer::printLabelArena()
 {

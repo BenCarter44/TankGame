@@ -10,6 +10,14 @@ include/
 
 
 
+CMakeFiles/
+CMake*
+*.cmake
+MakeFile
+!CMakeLists.txt
+!CMakeSettings.json
+
+
 
 # User-specific files
 *.rsuser

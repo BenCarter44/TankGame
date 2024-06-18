@@ -78,7 +78,7 @@ public:
 	virtual Shot aimShot() = 0; // the "semi-abstract" method!
 	virtual bool aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY) = 0; // the abstract method!
 
-	void Player::addWeaponStash(Stash& s);
+	void addWeaponStash(Stash& s);
 
 	
 	void setTank(int x, int y);

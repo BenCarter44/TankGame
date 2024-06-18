@@ -53,7 +53,7 @@ Shot HumanPlayer::aimShot()
 bool HumanPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)
 {
 	isQuitB = false;
-	KeyboardListener keys = KeyboardListener(120);
+	KeyboardListener keys = KeyboardListener(150);
 	keys.addKey('W');
 	keys.addKey('P');
 	keys.addKey('Q');
