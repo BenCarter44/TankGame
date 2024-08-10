@@ -18,7 +18,6 @@ This contains the menu where the player makes the selection of the power, weapon
 
 #include "Player.h"
 #include "PrettyConsole/console.h"
-#include "PrettyConsole/inputHandler.h"
 #include "WindowScaler.h"
 #include "GameContainer.h"
 #include <vector>

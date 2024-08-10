@@ -8,12 +8,18 @@ CST-210
 
 ![Screenshot](screenshot.png)
 
+---
+
+The graphics use the [Pretty Console system](https://github.com/BenCarter44/PrettyConsole).
+
+## About the game:
+
 In this game, a user can start as a new player or load from existing players. If the user starts as a new player, the player can input a name. 
 
 Once in the game, the user uses a menu to go to the arena or the shop. 
 
-The premese of this game is to grow in strength through upgrades of the user's tank. Eventually, the user's tank will be powerful enough to defeat the enemy tank.
-The user can earn money by scoring damage against the opponent in the arena. If the user wins the match (defined by who gave the most damage to the other player in 10 rounds), then the user also wins money porportional to the amount of damage scored.
+The premise of this game is to grow in strength through upgrades of the user's tank. Eventually, the user's tank will be powerful enough to defeat the enemy tank.
+The user can earn money by scoring damage against the opponent in the arena. If the user wins the match (defined by who gave the most damage to the other player in 10 rounds), then the user also wins money proportional to the amount of damage scored.
 
 The user can visit the store to buy new weapons or to add additional weapons to the current stash of weapons. 
 
@@ -54,13 +60,9 @@ Will need to port the keyboard listener to use the new keyboard functions from P
 ## References:
 
 	ASCII ART:
-	  // https://textkool.com/en/ascii-art-generator?hl=default&vl=default&font=Big&text=Tank%20Game%20V2%0A
+	   https://textkool.com/en/ascii-art-generator?hl=default&vl=default&font=Big&text=Tank%20Game%20V2%0A
 
 	Stack.h
 	   Listing 12.7 from Introduction to Programming with C++   Y. Daniel Liang    -- course textbook for CST-210
-
-	PrettyConsole library
-	   From Benjamin Carter (me) - A prior C++ project.
-	   You can view the source code on github at https://github.com/BenRobotics101/PrettyConsole
 
 
