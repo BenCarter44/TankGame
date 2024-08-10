@@ -18,8 +18,8 @@ This contains the menu where the player makes the selection of the power, weapon
 
 #include "Player.h"
 #include "PrettyConsole/console.h"
+#include "PrettyConsole/inputHandler.h"
 #include "WindowScaler.h"
-#include "KeyboardListener.h"
 #include "GameContainer.h"
 #include <vector>
 #include <string>
@@ -32,6 +32,7 @@ private:
 	int oldAngle;   // power and angle of the previous shot
 	Stash* oldWeapon;  // the stash of the weapons
 	bool isQuitB = false; // if the user selected "Quit"
+	InputHandler* keyboard;
 public:
 	HumanPlayer();
 	void init();

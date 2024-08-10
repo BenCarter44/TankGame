@@ -136,7 +136,7 @@ bool CPUPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)  // 
 	shotHold.setPower(maxPower);
 	shotHold.setWeapon(sw[count]->useUpWeapon());
 
-
+	return true;
 
 }
 Shot CPUPlayer::aimShot()

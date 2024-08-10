@@ -8,6 +8,7 @@ HumanPlayer::HumanPlayer() : Player()
 	oldAngle = 40;
 	isCPU = false;
 	oldWeapon = new Stash();
+	keyboard = new InputHandler();
 }
 HumanPlayer::HumanPlayer(string name) : Player(name)
 {
@@ -15,6 +16,7 @@ HumanPlayer::HumanPlayer(string name) : Player(name)
 	oldAngle = 40;
 	isCPU = false;
 	oldWeapon = new Stash();
+	keyboard = new InputHandler();
 }
 void HumanPlayer::init()
 {
@@ -53,15 +55,16 @@ Shot HumanPlayer::aimShot()
 bool HumanPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)
 {
 	isQuitB = false;
-	KeyboardListener keys = KeyboardListener(150);
-	keys.addKey('W');
-	keys.addKey('P');
-	keys.addKey('Q');
-	keys.addKey('A');
-	keys.addKey(VK_ESCAPE);
-	keys.addKey(VK_RETURN);
-	keys.addKey(VK_UP);
-	keys.addKey(VK_DOWN);
+	keyboard.startListening();
+	keyboard.clear();
+	// keys.addKey('W');
+	// keys.addKey('P');
+	// keys.addKey('Q');
+	// keys.addKey('A');
+	// keys.addKey(VK_ESCAPE);
+	// keys.addKey(VK_RETURN);
+	// keys.addKey(VK_UP);
+	// keys.addKey(VK_DOWN);
 	int weaponNumber = 0;
 	int power = oldPower;
 	int angle = oldAngle;
@@ -91,8 +94,16 @@ bool HumanPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)
 		c.putString(out3, winX.getVal(35) + out2.length(), winY.getVal(34));
 		c.smartRender();
 
-		keys.listen();
-		unsigned char inc = keys.getKey();
+		unsigned char inc = 0;
+		if(keyboard.isAvailable())
+		{
+			inc = 0;
+		}
+		else
+		{
+			inc = keyboard.read();
+		}
+		
 		if (inc == 'W')
 		{
 			if (adjustWeapon)
@@ -186,6 +197,7 @@ bool HumanPlayer::aimMenu(Console& c, WindowScaler& winX, WindowScaler& winY)
 		}
 		GameContainer::sleep(25);
 	}
+	keyboard.stopListening();
 	oldPower = power;
 	oldAngle = angle;
 	oldWeapon = weaponSelections[weaponNumber]; // , weaponSelections[weaponNumber].getRemaining());

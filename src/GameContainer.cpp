@@ -47,6 +47,7 @@ GameContainer::GameContainer()
 	winY.init(50, 0, 0, c.getHeight());
 
 
+	InputHandler* keyboard = new InputHandler();
 
 	// players
 	HumanPlayer* ben = new HumanPlayer("Ben"); // default player 1

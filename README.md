@@ -4,7 +4,7 @@
 By Benjamin Carter - December 14, 2021
 CST-210
 
-Fantasy Fighting Game
+# Fantasy Fighting Game
 
 
 In this game, a user can start as a new player or load from existing players. If the user starts as a new player, the player can input a name. 
@@ -29,7 +29,7 @@ The Ground, Weapon, and Tank class all describe different objects in the game.
 The Stash class contains a weapon and the count. A player has a vector list of stashes of different weapons.
 
 
-Helper classes:
+## Helper classes:
 
     WindowScaler scales all the visual components so that the game works on different screen sizes
 
@@ -41,8 +41,12 @@ Helper classes:
 
 	Stack is a general vector-like class implementing a last-in first-out stack. 
 
+## To Build:
 
-References:
+Use `cmake`
+
+
+## References:
 
 	ASCII ART:
 	  // https://textkool.com/en/ascii-art-generator?hl=default&vl=default&font=Big&text=Tank%20Game%20V2%0A

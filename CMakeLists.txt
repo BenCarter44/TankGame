@@ -1,23 +1,35 @@
 ﻿# CMakeList.txt : CMake project for TankGame, include source and define
 # project specific logic here.
 #
+# CMakeList.txt : CMake project for PrettyConsole, include source and define
+# project specific logic here.
+#
 cmake_minimum_required (VERSION 3.8)
-include(FetchContent)
+
 project ("TankGame")
-add_executable(TankGame "TankGame.cpp" "TankGame.h" "PrettyConsole/console.h" "PrettyConsole/console.cpp" "PrettyConsole/row.h" "PrettyConsole/row.cpp" "PrettyConsole/styles.h" "PrettyConsole/styles.cpp" "PrettyConsole/styleAttribute.h" "PrettyConsole/styleAttribute.cpp" "PrettyConsole/screenComponent.h" "PrettyConsole/screenComponent.cpp" "PrettyConsole/rectangle.h" "PrettyConsole/rectangle.cpp" "PrettyConsole/line.h" "PrettyConsole/line.cpp" "PrettyConsole/point.h" "PrettyConsole/point.cpp" "KeyboardListener.h" "KeyboardListener.cpp" "Stack.h"   "WindowScaler.cpp" "GameContainer.h" "GameContainer.cpp" "Player.cpp" "Tank.h" "Tank.cpp" "Weapon.h" "Shot.h" "Shot.cpp" "CPUPlayer.h" "CPUPlayer.cpp" "HumanPlayer.cpp" "HumanPlayer.h" "Stash.h" "Stash.cpp" "Weapon.cpp" "PStruct.h" "Ground.h" "Ground.cpp" "FileSaver.h" "FileSaver.cpp")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-#add_subdirectory(cpr)
-#include_directories(${CPR_INCLUDE_DIRS})
 
-# include(FetchContent)
-# FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/libcpr/cpr.git GIT_TAG 67e12da316754ff3c6c91b50aafb2658438f3c1e) # the commit hash for 1.7.0
-# FetchContent_MakeAvailable(cpr)
+file(GLOB SOURCES "${CMAKE_SOURCE_DIR}/src/*.cpp")
+file(GLOB SOURCES_PRETTY_CONSOLE "${CMAKE_SOURCE_DIR}/PrettyConsole/src/*.cpp")
 
-# target_link_libraries(TankGame PRIVATE cpr::cpr)
+file(GLOB_RECURSE HEADERS "${CMAKE_SOURCE_DIR}/include/*.h")
+file(GLOB_RECURSE HEADERS2 "${CMAKE_SOURCE_DIR}/include/*.hpp")
+
+file(GLOB_RECURSE HEADERS_PRETTY_CONSOLE "${CMAKE_SOURCE_DIR}/PrettyConsole/include/*.h")
+file(GLOB_RECURSE HEADERS_PRETTY_CONSOLE2 "${CMAKE_SOURCE_DIR}/PrettyConsole/include/*.hpp")
 
 # Add source to this project's executable.
-# add_executable (TankGame "TankGame.cpp" "TankGame.h")
-#"PrettyConsole/console.h" "PrettyConsole/console.cpp" "PrettyConsole/row.h" "PrettyConsole/row.cpp" "PrettyConsole/styles.h" "PrettyConsole/styles.cpp" "PrettyConsole/styleAttribute.h" "PrettyConsole/styleAttribute.cpp" "PrettyConsole/screenComponent.h" "PrettyConsole/screenComponent.cpp" "PrettyConsole/rectangle.h" "PrettyConsole/rectangle.cpp" "PrettyConsole/line.h" "PrettyConsole/line.cpp" "PrettyConsole/point.h" "PrettyConsole/point.cpp" "include/cpr/cpr.h" "include/curl/curl.h")
 
+# add_executable(TankGame ${SOURCES} ${SOURCES_PRETTY_CONSOLE} ${HEADERS} ${HEADERS2} ${HEADERS_PRETTY_CONSOLE} ${HEADERS_PRETTY_CONSOLE2})
+add_executable(TankGame ${SOURCES} ${HEADERS} ${HEADERS2})
+
+target_include_directories(TankGame PRIVATE "${CMAKE_SOURCE_DIR}/include")
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # TODO: Add tests and install targets if needed.
+
