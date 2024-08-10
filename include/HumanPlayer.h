@@ -32,7 +32,6 @@ private:
 	int oldAngle;   // power and angle of the previous shot
 	Stash* oldWeapon;  // the stash of the weapons
 	bool isQuitB = false; // if the user selected "Quit"
-	InputHandler* keyboard;
 public:
 	HumanPlayer();
 	void init();

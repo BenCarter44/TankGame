@@ -23,8 +23,8 @@ file(GLOB_RECURSE HEADERS_PRETTY_CONSOLE2 "${CMAKE_SOURCE_DIR}/PrettyConsole/inc
 
 # Add source to this project's executable.
 
-# add_executable(TankGame ${SOURCES} ${SOURCES_PRETTY_CONSOLE} ${HEADERS} ${HEADERS2} ${HEADERS_PRETTY_CONSOLE} ${HEADERS_PRETTY_CONSOLE2})
-add_executable(TankGame ${SOURCES} ${HEADERS} ${HEADERS2})
+add_executable(TankGame ${SOURCES} ${SOURCES_PRETTY_CONSOLE} ${HEADERS} ${HEADERS2} ${HEADERS_PRETTY_CONSOLE} ${HEADERS_PRETTY_CONSOLE2})
+# add_executable(TankGame ${SOURCES} ${HEADERS} ${HEADERS2})
 
 target_include_directories(TankGame PRIVATE "${CMAKE_SOURCE_DIR}/include")
 

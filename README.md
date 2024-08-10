@@ -4,8 +4,9 @@
 By Benjamin Carter - December 14, 2021
 CST-210
 
-# Fantasy Fighting Game
+# A Tank Console-Based Fantasy Fighting Game
 
+![Screenshot](screenshot.png)
 
 In this game, a user can start as a new player or load from existing players. If the user starts as a new player, the player can input a name. 
 
@@ -44,6 +45,10 @@ The Stash class contains a weapon and the count. A player has a vector list of s
 ## To Build:
 
 Use `cmake`
+
+Example: `cmake -S . -B build` and then `msbuild TankGame.sln` inside the `build` directory.
+Currently works on Windows only. 
+Will need to port the keyboard listener to use the new keyboard functions from PrettyConsole that are cross-platform, as then it will work on Linux as well.
 
 
 ## References:

@@ -5,8 +5,8 @@
 
 # Ignore PrettyConsole
 
-PrettyConsole/
-
+/PrettyConsole/
+build/
 
 
 CMakeFiles/
